@@ -1,0 +1,2696 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Agents — Lộ trình Làm chủ trong 24 giờ · XLeader Academy</title>
+<meta name="description" content="Claude Agents Mastery — Lộ trình làm chủ Claude Agents trong 24 giờ dành cho CEO, Founder, và Practitioner AI Việt. Agentic Loop, Agent SDK, Tools, Subagents, Hooks, MCP, Skills, và 6 composable patterns của Anthropic.">
+
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+/* ========== RESET & VARIABLES ========== */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --red:#C22620;
+  --red-dark:#8B1A16;
+  --red-light:#FCEBEB;
+  --gold:#D4AF37;
+  --gold-dark:#B8941F;
+  --gold-light:#FFFDF0;
+  --gold-bg:#FAF3E0;
+  --dark:#1a1a1a;
+  --text:#2a2a2a;
+  --text2:#444;
+  --text3:#5f5f5f;
+  --light:#f8f7f4;
+  --white:#fff;
+  --border:#e0dbd3;
+  --shadow:0 4px 24px rgba(0,0,0,.08);
+  --shadow-lg:0 8px 40px rgba(0,0,0,.12);
+  --code-bg:#1a1a1a;
+  --code-text:#f8f7f4;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter','Segoe UI',system-ui,sans-serif;
+  background:var(--white);
+  color:var(--dark);
+  line-height:1.65;
+  overflow-x:hidden;
+  position:relative;
+  font-size:16px;
+}
+
+/* ========== WATERMARK CHỐNG SAO CHÉP ========== */
+body::before{
+  content:'AIVN · CLAUDE AGENTS · AIVN · CLAUDE AGENTS · AIVN · CLAUDE AGENTS · AIVN · CLAUDE AGENTS · AIVN · CLAUDE AGENTS · AIVN';
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Oswald',sans-serif;
+  font-size:160px;
+  font-weight:700;
+  color:rgba(194,38,32,.022);
+  transform:rotate(-30deg);
+  letter-spacing:8px;
+  pointer-events:none;
+  white-space:nowrap;
+  overflow:hidden;
+  z-index:1;
+  line-height:2;
+  word-spacing:40px;
+}
+
+/* ========== LAYOUT ========== */
+.container{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:10}
+.container-narrow{max-width:960px;margin:0 auto;padding:0 24px;position:relative;z-index:10}
+
+h1,h2,h3,h4,h5{font-family:'Oswald',sans-serif;font-weight:600;letter-spacing:.2px;line-height:1.25}
+h2{font-size:36px;color:var(--dark);margin-bottom:16px}
+h3{font-size:22px;color:var(--dark);margin-bottom:10px}
+h4{font-size:16px;color:var(--red);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:12px}
+
+/* ========== NAV ========== */
+.nav{
+  position:fixed;top:0;left:0;right:0;
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  z-index:1000;
+  padding:12px 0;
+  transition:all .3s;
+}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;max-width:1200px;margin:0 auto;padding:0 24px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-mark{
+  width:36px;height:36px;background:var(--red);border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Oswald',sans-serif;font-size:14px;font-weight:700;color:var(--gold);letter-spacing:-1px;
+}
+.logo-text{font-family:'Oswald',sans-serif;font-size:13px;font-weight:600;color:var(--dark);letter-spacing:1px}
+.logo-sub{font-family:'Oswald',sans-serif;font-size:10px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+.nav-links{display:flex;gap:24px;align-items:center}
+.nav-links a{color:var(--text);text-decoration:none;font-size:12.5px;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--red)}
+.nav-cta{
+  background:var(--red);color:var(--white);
+  padding:9px 20px;border-radius:4px;
+  font-family:'Oswald',sans-serif;font-weight:600;font-size:12px;
+  letter-spacing:.5px;text-transform:uppercase;text-decoration:none;
+  transition:all .2s;
+}
+.nav-cta:hover{background:var(--red-dark)}
+
+@media (max-width:900px){
+  .nav-links a:not(.nav-cta){display:none}
+}
+
+/* ========== HERO ========== */
+.hero{
+  background:linear-gradient(135deg,var(--red) 0%,var(--red-dark) 100%);
+  color:var(--white);
+  padding:140px 0 100px;
+  position:relative;
+  overflow:hidden;
+  margin-top:60px;
+}
+.hero::before{
+  content:'';position:absolute;right:-120px;top:-120px;
+  width:560px;height:560px;
+  border:2px solid rgba(212,175,55,.1);border-radius:50%;
+}
+.hero::after{
+  content:'';position:absolute;right:60px;top:60px;
+  width:340px;height:340px;
+  border:2px solid rgba(212,175,55,.08);border-radius:50%;
+}
+.hero-inner{position:relative;z-index:5}
+.hero-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:60px;align-items:center}
+@media (max-width:900px){.hero-grid{grid-template-columns:1fr;gap:40px}}
+
+.hero-badge{
+  display:inline-block;
+  background:rgba(212,175,55,.2);
+  border:1px solid var(--gold);
+  color:var(--gold);
+  font-family:'Oswald',sans-serif;
+  font-size:11px;font-weight:600;
+  padding:7px 18px;border-radius:4px;
+  letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:24px;
+}
+.hero h1{
+  font-family:'Oswald',sans-serif;
+  font-size:clamp(42px,6vw,72px);font-weight:700;
+  color:var(--white);line-height:1.05;
+  margin-bottom:20px;
+  letter-spacing:.5px;
+}
+.hero h1 em{
+  font-style:normal;
+  color:var(--gold);
+}
+.hero-sub{
+  font-size:18px;
+  color:rgba(255,255,255,.92);
+  line-height:1.65;
+  margin-bottom:32px;
+  max-width:600px;
+}
+.hero-sub b{color:var(--gold);font-weight:600}
+
+.hero-stats{
+  background:rgba(0,0,0,.22);
+  border:1px solid rgba(212,175,55,.3);
+  border-radius:12px;
+  padding:28px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0;
+}
+.hero-stat{
+  padding:18px 20px;
+  border-right:1px solid rgba(212,175,55,.15);
+  border-bottom:1px solid rgba(212,175,55,.15);
+}
+.hero-stat:nth-child(2n){border-right:none}
+.hero-stat:nth-last-child(-n+2){border-bottom:none}
+.hero-stat-num{
+  font-family:'Oswald',sans-serif;
+  font-size:52px;font-weight:700;
+  color:var(--gold);line-height:1;
+  margin-bottom:6px;
+}
+.hero-stat-label{
+  font-family:'Oswald',sans-serif;
+  font-size:11px;color:rgba(255,255,255,.75);
+  text-transform:uppercase;letter-spacing:1.5px;
+}
+
+/* ========== SECTION COMMON ========== */
+.section{padding:90px 0;position:relative;z-index:10}
+.section-label{
+  display:inline-block;
+  background:var(--red-light);
+  color:var(--red);
+  font-family:'Oswald',sans-serif;
+  font-size:11px;font-weight:600;
+  padding:6px 16px;border-radius:3px;
+  letter-spacing:1.8px;text-transform:uppercase;
+  margin-bottom:18px;
+}
+.section-intro{
+  max-width:820px;margin:0 auto 50px;
+  text-align:center;
+}
+.section-intro h2 em{
+  font-style:normal;
+  color:var(--red);
+}
+.section-intro p{
+  font-size:17px;color:var(--text2);
+  line-height:1.75;
+  margin-top:16px;
+}
+
+.en-term{
+  font-style:italic;
+  color:var(--text3);
+  font-size:.92em;
+  font-weight:400;
+}
+
+/* ========== CHAPTER HEADER ========== */
+.chapter-head{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:32px;
+  align-items:center;
+  margin-bottom:40px;
+  padding-bottom:28px;
+  border-bottom:2px solid var(--border);
+}
+.chapter-num{
+  width:72px;height:72px;
+  background:var(--red);color:var(--gold);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Oswald',sans-serif;font-size:30px;font-weight:700;
+  flex-shrink:0;
+}
+.chapter-label{
+  font-family:'Oswald',sans-serif;
+  font-size:12px;color:var(--red);
+  letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:6px;
+}
+.chapter-title{
+  font-family:'Oswald',sans-serif;
+  font-size:36px;
+  color:var(--dark);
+  line-height:1.2;
+}
+.chapter-title em{
+  font-style:normal;
+  color:var(--red);
+}
+@media (max-width:700px){
+  .chapter-head{grid-template-columns:1fr;gap:16px}
+  .chapter-title{font-size:28px}
+}
+
+/* ========== PROSE ========== */
+.prose{
+  max-width:820px;
+  font-size:16px;
+  line-height:1.8;
+  color:var(--text);
+}
+.prose p{margin-bottom:18px}
+.prose p b,.prose p strong{color:var(--dark);font-weight:600}
+.prose a{color:var(--red);text-decoration:none;border-bottom:1px solid var(--red-light);transition:border-color .2s}
+.prose a:hover{border-bottom-color:var(--red)}
+
+/* SUB HEADINGS */
+.sub-head{
+  font-family:'Oswald',sans-serif;
+  font-size:26px;color:var(--dark);
+  margin:48px 0 18px;
+  padding-left:18px;
+  border-left:4px solid var(--red);
+  line-height:1.25;
+}
+.sub-head em{font-style:normal;color:var(--red)}
+.mini-head{
+  font-family:'Oswald',sans-serif;
+  font-size:12px;color:var(--gold-dark);
+  text-transform:uppercase;letter-spacing:2.5px;
+  margin:32px 0 14px;
+}
+
+/* ========== CODE BLOCKS ========== */
+pre.code{
+  background:var(--code-bg);
+  color:var(--code-text);
+  border-radius:10px;
+  padding:26px 30px;
+  overflow-x:auto;
+  margin:24px 0;
+  font-family:'SF Mono','Monaco','Menlo','Courier New',monospace;
+  font-size:13.5px;
+  line-height:1.7;
+  position:relative;
+  box-shadow:var(--shadow);
+  border-left:4px solid var(--gold);
+}
+pre.code::before{
+  content:attr(data-lang);
+  position:absolute;top:10px;right:16px;
+  font-family:'Oswald',sans-serif;
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--gold);
+}
+.code .kw{color:#e4b060}
+.code .str{color:#9bb88a}
+.code .com{color:rgba(248,247,244,.62);font-style:italic}
+.code .fn{color:#e8a87c}
+.code .num{color:#d4846a}
+code.inline{
+  font-family:'SF Mono','Monaco','Menlo',monospace;
+  font-size:.88em;
+  background:var(--red-light);
+  border:1px solid rgba(194,38,32,.2);
+  color:var(--red-dark);
+  padding:2px 8px;border-radius:3px;
+  font-weight:500;
+}
+
+/* ========== COMPARE TABLE ========== */
+.compare-wrap{
+  background:var(--white);
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+  margin:28px 0;
+  box-shadow:var(--shadow);
+}
+.compare{
+  width:100%;
+  border-collapse:collapse;
+  font-size:14.5px;
+}
+.compare th{
+  padding:16px 22px;
+  text-align:left;
+  background:var(--red);
+  color:var(--white);
+  font-family:'Oswald',sans-serif;
+  font-size:12px;letter-spacing:1.5px;text-transform:uppercase;
+}
+.compare td{
+  padding:20px 22px;
+  vertical-align:top;
+  border-bottom:1px solid var(--border);
+  color:var(--text);
+  line-height:1.65;
+}
+.compare tr:last-child td{border-bottom:none}
+.compare tr:nth-child(even) td{background:var(--light)}
+.compare td.col-label{
+  font-family:'Oswald',sans-serif;
+  font-size:18px;
+  color:var(--red);
+  font-weight:600;
+  width:28%;
+}
+.compare td b{color:var(--dark)}
+
+/* ========== CALLOUT ========== */
+.callout{
+  background:linear-gradient(135deg,var(--gold-bg) 0%,var(--gold-light) 100%);
+  border:1.5px solid var(--gold);
+  border-radius:10px;
+  padding:22px 26px;
+  margin:28px 0;
+  position:relative;
+}
+.callout-label{
+  font-family:'Oswald',sans-serif;
+  font-size:11px;color:var(--red-dark);
+  text-transform:uppercase;letter-spacing:2px;
+  margin-bottom:8px;
+  display:flex;align-items:center;gap:8px;
+}
+.callout-label::before{
+  content:'!';
+  display:inline-block;
+  width:20px;height:20px;
+  background:var(--red);color:var(--gold);
+  border-radius:50%;
+  text-align:center;
+  font-size:12px;font-weight:700;
+  line-height:20px;
+}
+.callout p{
+  font-size:15px;color:var(--text);
+  line-height:1.7;
+  margin:0;
+}
+.callout p b{color:var(--red-dark)}
+
+/* ========== LOOP DIAGRAM (3 steps) ========== */
+.loop-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+  margin:40px 0;
+}
+.loop-card{
+  background:var(--white);
+  border:1.5px solid var(--border);
+  border-top:4px solid var(--red);
+  border-radius:12px;
+  padding:32px 26px;
+  position:relative;
+  transition:all .25s;
+}
+.loop-card:hover{
+  border-color:var(--gold);
+  border-top-color:var(--gold);
+  box-shadow:var(--shadow-lg);
+  transform:translateY(-4px);
+}
+.loop-num{
+  font-family:'Oswald',sans-serif;
+  font-size:52px;font-weight:700;
+  color:var(--red-light);
+  line-height:1;
+  position:absolute;right:22px;top:18px;
+}
+.loop-mini{
+  font-family:'Oswald',sans-serif;
+  font-size:11px;color:var(--gold-dark);
+  letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:8px;
+}
+.loop-card h5{
+  font-family:'Oswald',sans-serif;
+  font-size:20px;color:var(--dark);
+  margin-bottom:12px;line-height:1.3;
+  padding-right:50px;
+}
+.loop-card p{
+  font-size:14px;color:var(--text2);
+  line-height:1.65;
+}
+@media (max-width:800px){.loop-grid{grid-template-columns:1fr}}
+
+/* ========== BUILDING BLOCKS GRID (2x4) ========== */
+.blocks-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:20px;
+  margin:30px 0;
+}
+.block-card{
+  background:var(--white);
+  border:1.5px solid var(--border);
+  border-left:4px solid var(--red);
+  border-radius:12px;
+  padding:28px 28px;
+  transition:all .25s;
+}
+.block-card:hover{
+  border-color:var(--gold);
+  border-left-color:var(--gold);
+  box-shadow:var(--shadow-lg);
+}
+.block-tag{
+  font-family:'Oswald',sans-serif;
+  font-size:11px;color:var(--red);
+  letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:10px;
+}
+.block-card h5{
+  font-family:'Oswald',sans-serif;
+  font-size:19px;color:var(--dark);
+  margin-bottom:10px;
+}
+.block-card h5 .en{
+  display:block;
+  font-size:12px;font-weight:400;
+  color:var(--text3);font-style:italic;
+  letter-spacing:.3px;margin-top:3px;
+}
+.block-card p{
+  font-size:14px;color:var(--text2);
+  line-height:1.65;
+}
+@media (max-width:800px){.blocks-grid{grid-template-columns:1fr}}
+
+/* ========== PATTERN LIST (6 items) ========== */
+.pattern-list{
+  max-width:980px;margin:0 auto;
+}
+.pattern-row{
+  display:grid;
+  grid-template-columns:90px 1fr;
+  gap:28px;
+  padding:32px 28px;
+  background:var(--white);
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  margin-bottom:16px;
+  transition:all .2s;
+}
+.pattern-row:hover{
+  border-color:var(--gold);
+  box-shadow:var(--shadow);
+}
+.pattern-roman{
+  font-family:'Oswald',sans-serif;
+  font-size:48px;font-weight:700;
+  color:var(--red);
+  line-height:1;
+}
+.pattern-body h5{
+  font-family:'Oswald',sans-serif;
+  font-size:22px;color:var(--dark);
+  margin-bottom:8px;
+}
+.pattern-body h5 .en{
+  display:inline-block;
+  margin-left:10px;
+  font-family:'Inter',sans-serif;
+  font-size:13px;font-weight:400;
+  color:var(--text3);font-style:italic;
+  letter-spacing:0;
+}
+.pattern-body p{
+  font-size:14.5px;color:var(--text);
+  line-height:1.7;margin-bottom:12px;
+}
+.pattern-when{
+  background:var(--gold-bg);
+  border-left:3px solid var(--gold);
+  padding:10px 16px;
+  font-size:13.5px;color:var(--text);
+  font-style:italic;
+  border-radius:0 6px 6px 0;
+}
+.pattern-when::before{
+  content:'Dùng khi: ';
+  font-family:'Oswald',sans-serif;font-style:normal;
+  color:var(--red-dark);font-weight:600;
+  font-size:12px;letter-spacing:1px;text-transform:uppercase;
+}
+@media (max-width:700px){
+  .pattern-row{grid-template-columns:1fr;gap:12px}
+}
+
+/* ========== SKILL STRUCTURE ========== */
+.skill-tree{
+  background:var(--light);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:22px 26px;
+  margin:24px 0;
+  font-family:'SF Mono','Monaco',monospace;
+  font-size:13.5px;
+  line-height:1.9;
+  color:var(--text);
+}
+.skill-tree .file{color:var(--red-dark);font-weight:600}
+.skill-tree .com{color:var(--text3);font-style:italic}
+
+.stage-list{
+  counter-reset:stage;
+  margin:24px 0;
+}
+.stage-item{
+  background:var(--white);
+  border:1.5px solid var(--border);
+  border-left:4px solid var(--red);
+  border-radius:10px;
+  padding:22px 26px;
+  margin-bottom:14px;
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:20px;
+  align-items:flex-start;
+}
+.stage-num{
+  width:38px;height:38px;
+  background:var(--red);color:var(--gold);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Oswald',sans-serif;font-size:16px;font-weight:700;
+  flex-shrink:0;
+}
+.stage-body h6{
+  font-family:'Oswald',sans-serif;
+  font-size:15px;color:var(--dark);
+  margin-bottom:6px;
+  letter-spacing:.3px;
+}
+.stage-body p{
+  font-size:14px;color:var(--text2);
+  line-height:1.65;
+  margin:0;
+}
+
+/* ========== SCHEDULE / 24-HOUR ========== */
+.schedule{margin:30px 0}
+.hour-row{
+  display:grid;
+  grid-template-columns:120px 1fr 1.8fr;
+  gap:28px;
+  padding:22px 24px;
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:10px;
+  margin-bottom:10px;
+  transition:all .2s;
+  align-items:flex-start;
+}
+.hour-row:hover{
+  border-color:var(--gold);
+  box-shadow:var(--shadow);
+}
+.hour-row.break{
+  background:var(--gold-bg);
+  border-color:var(--gold);
+}
+.hour-range{
+  font-family:'Oswald',sans-serif;
+  font-size:14px;font-weight:600;
+  color:var(--red);
+  letter-spacing:1px;
+  padding-top:2px;
+}
+.hour-row.break .hour-range{color:var(--red-dark)}
+.hour-title{
+  font-family:'Oswald',sans-serif;
+  font-size:16px;color:var(--dark);
+  line-height:1.35;
+  letter-spacing:.2px;
+}
+.hour-desc{
+  font-size:13.5px;color:var(--text2);
+  line-height:1.6;
+}
+@media (max-width:900px){
+  .hour-row{grid-template-columns:1fr;gap:6px;padding:18px}
+}
+
+/* ========== WISDOM / TRAPS ========== */
+.trap-list{
+  max-width:900px;margin:0 auto;
+}
+.trap-item{
+  display:grid;
+  grid-template-columns:48px 1fr;
+  gap:20px;
+  padding:22px 0;
+  border-bottom:1px dashed var(--border);
+  align-items:flex-start;
+}
+.trap-item:last-child{border-bottom:none}
+.trap-icon{
+  width:36px;height:36px;
+  background:var(--red-light);
+  color:var(--red);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Oswald',sans-serif;font-size:18px;font-weight:700;
+  flex-shrink:0;
+}
+.trap-body b{
+  color:var(--dark);
+  font-weight:600;
+  display:block;
+  margin-bottom:4px;
+  font-size:15.5px;
+}
+.trap-body span{
+  color:var(--text2);
+  font-size:14.5px;
+  line-height:1.65;
+}
+
+/* ========== RESOURCES GRID ========== */
+.res-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:18px;
+  margin:30px 0;
+}
+.res-card{
+  display:block;
+  background:var(--white);
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  padding:24px 26px;
+  text-decoration:none;
+  color:inherit;
+  transition:all .25s;
+  position:relative;
+}
+.res-card:hover{
+  border-color:var(--red);
+  transform:translateY(-3px);
+  box-shadow:var(--shadow-lg);
+}
+.res-type{
+  font-family:'Oswald',sans-serif;
+  font-size:10px;color:var(--gold-dark);
+  letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:10px;
+}
+.res-card h6{
+  font-family:'Oswald',sans-serif;
+  font-size:18px;color:var(--dark);
+  margin-bottom:8px;letter-spacing:.3px;
+}
+.res-card p{
+  font-size:13.5px;color:var(--text2);
+  line-height:1.55;margin:0;
+}
+.res-card::after{
+  content:'→';
+  position:absolute;top:24px;right:26px;
+  color:var(--red);font-size:20px;
+  font-family:'Oswald',sans-serif;font-weight:600;
+  transition:transform .2s;
+}
+.res-card:hover::after{transform:translateX(4px)}
+@media (max-width:800px){.res-grid{grid-template-columns:1fr}}
+
+/* ========== CLOSING BANNER ========== */
+.closing{
+  background:linear-gradient(135deg,var(--red) 0%,var(--red-dark) 100%);
+  color:var(--white);
+  padding:90px 0;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+  z-index:10;
+}
+.closing::before{
+  content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:700px;height:700px;
+  border:2px solid rgba(212,175,55,.08);border-radius:50%;
+}
+.closing::after{
+  content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:440px;height:440px;
+  border:2px solid rgba(212,175,55,.12);border-radius:50%;
+}
+.closing-inner{position:relative;z-index:5}
+.closing-badge{
+  display:inline-block;
+  background:rgba(212,175,55,.2);
+  border:1px solid var(--gold);
+  color:var(--gold);
+  font-family:'Oswald',sans-serif;
+  font-size:11px;font-weight:600;
+  padding:7px 18px;border-radius:4px;
+  letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:24px;
+}
+.closing h2{
+  font-family:'Oswald',sans-serif;
+  font-size:clamp(36px,5vw,60px);
+  color:var(--white);line-height:1.1;
+  margin-bottom:16px;
+  letter-spacing:.5px;
+}
+.closing h2 em{font-style:normal;color:var(--gold)}
+.closing p{
+  font-size:17px;
+  color:rgba(255,255,255,.85);
+  max-width:640px;margin:0 auto;
+  line-height:1.7;
+}
+
+/* ========== FOOTER ========== */
+footer{
+  background:var(--dark);
+  color:rgba(255,255,255,.7);
+  padding:50px 0 28px;
+  position:relative;
+  z-index:10;
+}
+.foot-grid{
+  display:grid;
+  grid-template-columns:1.2fr 1fr;
+  gap:40px;
+  margin-bottom:32px;
+}
+.foot-brand h5{
+  font-family:'Oswald',sans-serif;
+  font-size:18px;color:var(--white);
+  margin-bottom:10px;letter-spacing:.5px;
+}
+.foot-brand p{
+  font-size:13.5px;
+  color:rgba(255,255,255,.78);
+  line-height:1.7;
+}
+.foot-meta{font-size:13px;line-height:1.8;color:rgba(255,255,255,.78)}
+.foot-meta h6{
+  font-family:'Oswald',sans-serif;
+  font-size:12px;color:var(--gold);
+  text-transform:uppercase;letter-spacing:2px;
+  margin-bottom:10px;
+}
+.foot-bottom{
+  border-top:1px solid rgba(255,255,255,.1);
+  padding-top:20px;
+  text-align:center;
+  font-family:'Oswald',sans-serif;
+  font-size:11px;
+  color:rgba(255,255,255,.5);
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+}
+@media (max-width:700px){.foot-grid{grid-template-columns:1fr}}
+
+/* ========== UTILITY ========== */
+.alt-bg{background:var(--light)}
+.alt-bg-2{background:var(--gold-light)}
+
+/* ========== CHAPTER 00 — SELF ASSESSMENT ========== */
+.quiz-wrap{
+  max-width:980px;margin:0 auto;
+}
+.quiz-intro{
+  text-align:center;
+  margin-bottom:32px;
+}
+.quiz-intro p{
+  font-size:16px;color:var(--text);
+  line-height:1.75;
+  max-width:720px;margin:12px auto 0;
+}
+.quiz-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin:30px 0;
+}
+.quiz-q{
+  background:var(--white);
+  border:1.5px solid var(--border);
+  border-radius:10px;
+  padding:16px 20px;
+  display:grid;
+  grid-template-columns:36px 1fr;
+  gap:14px;
+  align-items:flex-start;
+  transition:all .2s;
+  cursor:pointer;
+}
+.quiz-q:hover{border-color:var(--red);box-shadow:var(--shadow)}
+.quiz-q-num{
+  width:30px;height:30px;
+  background:var(--red-light);
+  color:var(--red-dark);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Oswald',sans-serif;
+  font-size:12px;font-weight:700;
+  flex-shrink:0;
+}
+.quiz-q-text{
+  font-size:14px;color:var(--text);
+  line-height:1.55;
+}
+@media (max-width:700px){.quiz-grid{grid-template-columns:1fr}}
+
+.score-bands{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:0;
+  margin:40px 0 0;
+  border-radius:10px;
+  overflow:hidden;
+  border:2px solid var(--gold);
+}
+.band{
+  padding:22px 18px;
+  text-align:center;
+  background:var(--white);
+  border-right:1px solid var(--border);
+}
+.band:last-child{border-right:none}
+.band.hot{background:linear-gradient(180deg,var(--red) 0%,var(--red-dark) 100%);color:var(--white)}
+.band-score{
+  font-family:'Oswald',sans-serif;
+  font-size:22px;font-weight:700;
+  color:var(--red);
+  line-height:1;
+  margin-bottom:6px;
+}
+.band.hot .band-score{color:var(--gold)}
+.band-level{
+  font-family:'Oswald',sans-serif;
+  font-size:11px;
+  letter-spacing:1.2px;text-transform:uppercase;
+  color:var(--dark);
+  margin-bottom:4px;
+}
+.band.hot .band-level{color:var(--white)}
+.band-action{
+  font-size:11.5px;
+  color:var(--text2);
+  line-height:1.5;
+}
+.band.hot .band-action{color:rgba(255,255,255,.85)}
+@media (max-width:800px){
+  .score-bands{grid-template-columns:repeat(1,1fr)}
+  .band{border-right:none;border-bottom:1px solid var(--border)}
+  .band:last-child{border-bottom:none}
+}
+
+/* ========== LEVEL PILL ON HOUR BLOCK ========== */
+.lvl-pill{
+  display:inline-block;
+  background:var(--gold-bg);
+  color:var(--red-dark);
+  font-family:'Oswald',sans-serif;
+  font-size:9.5px;font-weight:600;
+  letter-spacing:1.3px;text-transform:uppercase;
+  padding:3px 9px;border-radius:3px;
+  border:1px solid var(--gold);
+  margin-left:8px;
+  vertical-align:middle;
+}
+
+/* ========== TRACK DIVIDER ========== */
+.track-divider{
+  display:flex;
+  align-items:center;
+  gap:28px;
+  margin:60px 0 32px;
+}
+.track-divider-line{
+  flex:1;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.track-divider-content{
+  text-align:center;
+  flex-shrink:0;
+  max-width:580px;
+}
+.track-divider-tag{
+  display:inline-block;
+  background:var(--red);
+  color:var(--gold);
+  font-family:'Oswald',sans-serif;
+  font-size:10.5px;font-weight:600;
+  letter-spacing:2.5px;text-transform:uppercase;
+  padding:6px 16px;
+  border-radius:3px;
+  margin-bottom:14px;
+}
+.track-divider-title{
+  font-family:'Oswald',sans-serif;
+  font-size:28px;color:var(--dark);
+  line-height:1.2;
+  margin-bottom:8px;
+}
+.track-divider-title em{
+  font-style:normal;
+  color:var(--red);
+}
+.track-divider-sub{
+  font-size:14px;
+  color:var(--text2);
+  font-style:italic;
+  line-height:1.55;
+}
+@media (max-width:800px){
+  .track-divider{flex-direction:column;gap:14px}
+  .track-divider-line{width:60%;height:1px}
+}
+
+/* ========== CHAPTER 10 — E-COMMERCE LAB ========== */
+.lab-intro{
+  background:linear-gradient(135deg,var(--gold-bg) 0%,var(--gold-light) 100%);
+  border:2px solid var(--gold);
+  border-radius:16px;
+  padding:32px 36px;
+  margin:28px 0 40px;
+}
+.lab-intro h4{
+  font-family:'Oswald',sans-serif;
+  font-size:13px;color:var(--red-dark);
+  margin-bottom:14px;
+  letter-spacing:1.8px;text-transform:uppercase;
+}
+.lab-intro p{
+  font-size:15px;color:var(--text);
+  line-height:1.75;
+  margin-bottom:16px;
+}
+.lab-intro p b{color:var(--red-dark);font-weight:600}
+.lab-intro ul{
+  list-style:none;padding:0;margin:16px 0 0;
+  display:grid;grid-template-columns:repeat(2,1fr);gap:10px 22px;
+}
+.lab-intro li{
+  font-size:13.5px;color:var(--text);
+  padding-left:24px;position:relative;
+  line-height:1.55;
+}
+.lab-intro li::before{
+  content:'✓';position:absolute;left:0;top:0;
+  color:var(--red);font-weight:700;font-size:15px;
+}
+.lab-intro li b{color:var(--dark);font-weight:600}
+@media (max-width:700px){.lab-intro ul{grid-template-columns:1fr}}
+
+.ex-list{margin:32px 0}
+.ex-card{
+  background:var(--white);
+  border:1.5px solid var(--border);
+  border-radius:14px;
+  padding:26px 30px 26px 36px;
+  margin-bottom:18px;
+  display:grid;
+  grid-template-columns:76px 1fr;
+  gap:24px;
+  transition:all .25s;
+  position:relative;
+  overflow:hidden;
+}
+.ex-card:hover{
+  border-color:var(--red);
+  box-shadow:var(--shadow-lg);
+  transform:translateX(2px);
+}
+.ex-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:5px;background:var(--red);
+}
+.ex-num-col{display:flex;flex-direction:column;align-items:center;padding-top:4px}
+.ex-num{
+  width:58px;height:58px;
+  background:var(--red);color:var(--gold);
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Oswald',sans-serif;
+  font-size:22px;font-weight:700;
+  letter-spacing:.5px;
+}
+.ex-time{
+  margin-top:10px;
+  font-family:'Oswald',sans-serif;
+  font-size:10px;color:var(--gold-dark);
+  letter-spacing:1.5px;text-transform:uppercase;
+  text-align:center;
+  font-weight:600;
+}
+.ex-title{
+  font-family:'Oswald',sans-serif;
+  font-size:21px;color:var(--dark);
+  margin-bottom:4px;line-height:1.25;
+}
+.ex-title-en{
+  display:block;
+  font-family:'Inter',sans-serif;
+  font-size:13px;color:var(--text3);
+  font-style:italic;font-weight:400;
+  margin-bottom:12px;
+  letter-spacing:0;
+}
+.ex-stack{
+  display:flex;flex-wrap:wrap;gap:6px;
+  margin-bottom:14px;
+}
+.stack-pill{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--red-light);
+  color:var(--red-dark);
+  font-family:'Oswald',sans-serif;
+  font-size:10px;font-weight:600;
+  letter-spacing:1.2px;
+  padding:4px 11px;border-radius:3px;
+  text-transform:uppercase;
+  border:1px solid rgba(194,38,32,.18);
+}
+.stack-pill.gold{
+  background:var(--gold-bg);
+  color:var(--red-dark);
+  border-color:var(--gold);
+}
+.stack-pill.dark{
+  background:var(--dark);
+  color:var(--gold);
+  border-color:var(--dark);
+}
+.ex-goal{
+  font-size:14.5px;color:var(--text);
+  line-height:1.7;
+  margin-bottom:14px;
+}
+.ex-goal b{color:var(--dark)}
+.ex-steps{
+  background:var(--light);
+  border-radius:8px;
+  padding:16px 20px;
+  margin-bottom:12px;
+  border-left:3px solid var(--red-light);
+}
+.ex-steps ol{
+  list-style:none;counter-reset:step;
+  padding:0;margin:0;
+}
+.ex-steps li{
+  counter-increment:step;
+  padding-left:34px;
+  position:relative;
+  font-size:13.5px;color:var(--text);
+  line-height:1.65;
+  margin-bottom:10px;
+}
+.ex-steps li:last-child{margin-bottom:0}
+.ex-steps li::before{
+  content:counter(step);
+  position:absolute;left:0;top:1px;
+  width:22px;height:22px;
+  background:var(--red);color:var(--gold);
+  border-radius:50%;
+  font-family:'Oswald',sans-serif;
+  font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.ex-deliverable{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:11px 16px;
+  background:var(--gold-bg);
+  border-left:3px solid var(--gold);
+  border-radius:0 6px 6px 0;
+  font-size:13px;color:var(--text);
+  line-height:1.6;
+}
+.ex-deliverable b{
+  color:var(--red-dark);
+  font-family:'Oswald',sans-serif;
+  font-size:11px;letter-spacing:1.3px;text-transform:uppercase;
+  margin-right:4px;
+  flex-shrink:0;
+}
+@media (max-width:700px){
+  .ex-card{grid-template-columns:1fr;gap:14px;padding:22px 20px 22px 26px}
+  .ex-num-col{flex-direction:row;justify-content:flex-start;gap:14px;align-items:center}
+  .ex-num{width:46px;height:46px;font-size:18px}
+  .ex-time{margin-top:0}
+  .lab-intro{padding:24px 22px}
+}
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <div class="logo-mark">AI</div>
+      <div>
+        <div class="logo-text">CLAUDE AGENTS</div>
+        <div class="logo-sub">AIVN Mastery Track</div>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="#quiz">Self-check</a>
+      <a href="#foundations">Nền tảng</a>
+      <a href="#loop">Agentic Loop</a>
+      <a href="#sdk">Agent SDK</a>
+      <a href="#blocks">Building Blocks</a>
+      <a href="#patterns">Patterns</a>
+      <a href="#schedule">Lịch 24 giờ</a>
+      <a href="#lab">E-com Lab</a>
+      <a href="#resources" class="nav-cta">Tài liệu</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-grid">
+        <div>
+          <div class="hero-badge">Claude Agents Mastery · 24 giờ</div>
+          <h1>Làm chủ Claude Agents <em>trong một ngày.</em></h1>
+          <p class="hero-sub">
+            Toàn bộ những gì khiến autonomous agent vận hành — <b>Agentic Loop</b>, <b>Claude Agent SDK</b>, Tools, Subagents, Hooks, MCP, Skills, và <b>6 composable patterns</b> Anthropic đã định nghĩa cho cả lĩnh vực này. Lộ trình thiết kế cho CEO, Founder, và Practitioner AI Việt đi từ con số 0 đến ship được một agent thật trong 24 giờ tập trung.
+          </p>
+          <div style="display:flex;gap:14px;flex-wrap:wrap">
+            <a href="#foundations" style="display:inline-block;background:var(--gold);color:var(--red-dark);padding:14px 32px;border-radius:6px;font-family:'Oswald',sans-serif;font-weight:700;font-size:14px;letter-spacing:1px;text-transform:uppercase;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.2)">Bắt đầu học →</a>
+            <a href="#schedule" style="display:inline-block;background:transparent;color:var(--gold);padding:14px 32px;border-radius:6px;border:1.5px solid var(--gold);font-family:'Oswald',sans-serif;font-weight:600;font-size:14px;letter-spacing:1px;text-transform:uppercase;text-decoration:none">Xem lịch 24 giờ</a>
+          </div>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-num">10</div>
+            <div class="hero-stat-label">Self-check Questions</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-num">7</div>
+            <div class="hero-stat-label">Mastery Levels</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-num">6</div>
+            <div class="hero-stat-label">Core Patterns</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-num">18</div>
+            <div class="hero-stat-label">E-com + TikTok Shop</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- CHAPTER 00 — SELF ASSESSMENT & ENTRY PATH -->
+<section class="section alt-bg-2" id="quiz">
+  <div class="container">
+    <div class="section-intro">
+      <span class="section-label">Chương 00 · Điểm khởi đầu</span>
+      <h2>Bạn đang ở <em>đâu?</em> · Self-Assessment</h2>
+      <p>Trước khi dấn vào 24 giờ học, trả lời 10 câu hỏi YES/NO dưới đây. Đừng đoán — chỉ tick những câu bạn <b>đã thật sự</b> làm. Kết quả cho biết bạn nên bắt đầu từ giờ nào.</p>
+    </div>
+
+    <div class="container-narrow" style="padding:0">
+      <div class="chapter-head">
+        <div class="chapter-num">0</div>
+        <div>
+          <div class="chapter-label">§ 00 / Định vị</div>
+          <div class="chapter-title">10 câu hỏi <em>xác định level</em> của bạn</div>
+        </div>
+      </div>
+
+      <!-- Agent SDK vs Claude Code clarification -->
+      <div class="callout" style="margin-bottom:36px">
+        <div class="callout-label">Trước tiên · Phân biệt quan trọng</div>
+        <p>Guide này tập trung vào <b>Claude Agent SDK</b> (thư viện Python/TypeScript để builder ship agent production). Nó khác với <b>Claude Code</b> (CLI tool cài vào terminal để developer dùng daily). Hai thứ chia sẻ concept chung — CLAUDE.md, Skills, Subagents, MCP, Hooks — nhưng phục vụ hai audience khác nhau. Nếu bạn là <em>CEO/operator không phải developer</em>, Claude Code CLI là on-ramp nhanh hơn: cài một lệnh, dùng qua natural prompts, không cần viết code. Nếu bạn <em>muốn ship agent tự động hóa sản phẩm</em>, Agent SDK là con đường đúng.</p>
+      </div>
+
+      <div class="quiz-wrap">
+        <div class="quiz-intro">
+          <p style="font-family:'Oswald',sans-serif;font-size:13px;color:var(--gold-dark);letter-spacing:2px;text-transform:uppercase">Đếm số câu bạn tick YES</p>
+        </div>
+
+        <div class="quiz-grid">
+          <div class="quiz-q">
+            <div class="quiz-q-num">01</div>
+            <div class="quiz-q-text">Đã dùng Claude Code hoặc claude.ai ít nhất 10 session thật sự cho công việc?</div>
+          </div>
+          <div class="quiz-q">
+            <div class="quiz-q-num">02</div>
+            <div class="quiz-q-text">Phân biệt được <b>workflow</b> vs <b>agent</b> và biết khi nào dùng cái nào?</div>
+          </div>
+          <div class="quiz-q">
+            <div class="quiz-q-num">03</div>
+            <div class="quiz-q-text">Biết khác biệt <b>Sonnet vs Opus</b> + hiểu tại sao Agent Teams tốn ~7x token?</div>
+          </div>
+          <div class="quiz-q">
+            <div class="quiz-q-num">04</div>
+            <div class="quiz-q-text">Đã viết <code class="inline">CLAUDE.md</code> cho ít nhất một project thật của mình?</div>
+          </div>
+          <div class="quiz-q">
+            <div class="quiz-q-num">05</div>
+            <div class="quiz-q-text">Biết khi nào dùng <code class="inline">/compact</code> vs <code class="inline">/clear</code> để quản context?</div>
+          </div>
+          <div class="quiz-q">
+            <div class="quiz-q-num">06</div>
+            <div class="quiz-q-text">Đã kết nối ít nhất <b>1 MCP server</b> (GitHub, Slack, Gmail, hoặc Shopify)?</div>
+          </div>
+          <div class="quiz-q">
+            <div class="quiz-q-num">07</div>
+            <div class="quiz-q-text">Đã viết custom tool bằng decorator <code class="inline">@tool</code> hoặc <code class="inline">createSdkMcpServer</code>?</div>
+          </div>
+          <div class="quiz-q">
+            <div class="quiz-q-num">08</div>
+            <div class="quiz-q-text">Đã dùng <b>subagent</b> hoặc Agent SDK <code class="inline">query()</code> để spawn agent con?</div>
+          </div>
+          <div class="quiz-q">
+            <div class="quiz-q-num">09</div>
+            <div class="quiz-q-text">Đã tạo custom <code class="inline">SKILL.md</code> với YAML frontmatter được Claude invoke đúng?</div>
+          </div>
+          <div class="quiz-q">
+            <div class="quiz-q-num">10</div>
+            <div class="quiz-q-text">Đã ship 1 agent thật vào daily workflow / production (không chỉ demo)?</div>
+          </div>
+        </div>
+
+        <div class="score-bands">
+          <div class="band">
+            <div class="band-score">0–2</div>
+            <div class="band-level">L1 Prompt</div>
+            <div class="band-action">Bắt đầu từ <b>H01</b>. Đọc đủ chương 1–3.</div>
+          </div>
+          <div class="band">
+            <div class="band-score">3–4</div>
+            <div class="band-level">L2 Planner</div>
+            <div class="band-action">Skip tới <b>H05</b>. Focus tools + MCP.</div>
+          </div>
+          <div class="band hot">
+            <div class="band-score">5–6</div>
+            <div class="band-level">L3 Context</div>
+            <div class="band-action">Nhảy tới <b>H11</b>. Subagents + hooks.</div>
+          </div>
+          <div class="band">
+            <div class="band-score">7–8</div>
+            <div class="band-level">L4 Tool</div>
+            <div class="band-action">Start <b>H17</b>. Skills + 6 patterns.</div>
+          </div>
+          <div class="band">
+            <div class="band-score">9–10</div>
+            <div class="band-level">L5+ Skill</div>
+            <div class="band-action">Đi thẳng <b>E-com Lab</b>. Capstone.</div>
+          </div>
+        </div>
+
+        <p style="font-size:13px;color:var(--text3);font-style:italic;margin-top:20px;text-align:center">Thang 7 cấp độ đo độ thành thạo từ Prompt Engineer đến Autonomous · áp dụng cho cả Claude Code CLI và Claude Agent SDK.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHAPTER 01: FOUNDATIONS -->
+<section class="section" id="foundations">
+  <div class="container">
+    <div class="section-intro">
+      <span class="section-label">Chương 01 · Foundations</span>
+      <h2>Agent thật sự là <em>gì?</em></h2>
+      <p>Khác biệt nền tảng bạn phải nắm ngay ngày đầu tiên — phân biệt thẳng thắn giữa <b>Workflow</b> và <b>Agent</b>. Đây là đòn bẩy lớn nhất trong toàn bộ 24 giờ học tập.</p>
+    </div>
+
+    <div class="container-narrow" style="padding:0">
+      <div class="chapter-head">
+        <div class="chapter-num">I</div>
+        <div>
+          <div class="chapter-label">§ 01 / Nền tảng</div>
+          <div class="chapter-title">Định nghĩa chính xác — <em>Workflow vs. Agent</em></div>
+        </div>
+      </div>
+
+      <div class="prose">
+        <p>Anthropic vạch một ranh giới sắc nét giữa hai loại hệ thống mà người ta vẫn gọi chung là "agent". Việc phân biệt đúng hai khái niệm này là <b>điểm tựa quan trọng nhất</b> bạn cần làm chủ trong ngày đầu tiên.</p>
+      </div>
+
+      <div class="compare-wrap">
+        <table class="compare">
+          <thead>
+            <tr><th style="width:22%">Loại</th><th style="width:38%">Định nghĩa</th><th>Dùng khi nào</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-label">Workflow</td>
+              <td>LLM và tools được điều phối qua <b>các đường code đã định trước</b> <span class="en-term">(predefined code paths)</span>. Chính bạn — kỹ sư — viết cây quyết định.</td>
+              <td>Tác vụ có tính dự đoán được, khối lượng lớn, nhạy chi phí, hoặc có các nhánh được định nghĩa rõ ràng.</td>
+            </tr>
+            <tr>
+              <td class="col-label">Agent</td>
+              <td>LLM <b>tự điều hướng việc dùng tools và luồng điều khiển</b> <span class="en-term">(dynamically directs its own tool use and control flow)</span> dựa trên phản hồi môi trường, trong một vòng lặp, cho đến khi hoàn thành tác vụ.</td>
+              <td>Tác vụ mở, phụ thuộc đường đi, hoặc quá phức tạp để liệt kê trước các nhánh.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <div class="callout-label">Nguyên tắc vàng của Anthropic</div>
+        <p>Hãy bắt đầu từ giải pháp <b>đơn giản nhất có thể</b>. Một lần gọi LLM được prompt tốt thắng được workflow. Workflow thắng được agent. Chỉ reach for agent khi tính linh hoạt và quyết định do model điều hướng ở quy mô lớn đủ để biện minh cho chi phí và độ trễ tăng thêm.</p>
+      </div>
+
+      <h3 class="sub-head">The <em>augmented LLM</em> — khối nguyên tử</h3>
+      <div class="prose">
+        <p>Mọi agent và workflow đều được xây từ một khối nguyên tử duy nhất: <b>augmented LLM</b> — một model được bổ sung ba thứ: <b>retrieval</b> (thu thập ngữ cảnh), <b>tools</b> (hành động), và <b>memory</b> (lưu trạng thái). Toàn bộ guide này là cách <em>kết hợp</em> các augmented LLM lại với nhau.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHAPTER 02 — THE LOOP -->
+<section class="section alt-bg" id="loop">
+  <div class="container">
+    <div class="section-intro">
+      <span class="section-label">Chương 02 · The Engine</span>
+      <h2>Agentic <em>Loop</em></h2>
+      <p>Mọi Claude agent — dù đang viết code, làm deep research, hay dựng video — đều chạy cùng một vòng lặp ba nhịp. Anthropic xây Claude Code trên nền tảng này, rồi tách harness ra thành Claude Agent SDK để bạn có thể chạy nó.</p>
+    </div>
+
+    <div class="container-narrow" style="padding:0">
+      <div class="chapter-head">
+        <div class="chapter-num">II</div>
+        <div>
+          <div class="chapter-label">§ 02 / Bộ máy</div>
+          <div class="chapter-title">Vòng lặp <em>ba nhịp</em> — đầu não của mọi agent</div>
+        </div>
+      </div>
+
+      <div class="loop-grid">
+        <div class="loop-card">
+          <div class="loop-num">01</div>
+          <div class="loop-mini">Step one</div>
+          <h5>Gather context</h5>
+          <p>Agentic search (<code class="inline">grep</code>, <code class="inline">tail</code>, file reads), semantic search / embeddings, MCP calls, subagent queries. Vừa đủ để lập luận — không quá nhiều để làm ngộp context window.</p>
+        </div>
+        <div class="loop-card">
+          <div class="loop-num">02</div>
+          <div class="loop-mini">Step two</div>
+          <h5>Take action</h5>
+          <p>Tool calls — built-in (Read, Write, Bash, WebSearch) hoặc custom. Model quyết định dùng tool nào, theo thứ tự nào, với tham số nào, dựa trên những gì vừa quan sát được.</p>
+        </div>
+        <div class="loop-card">
+          <div class="loop-num">03</div>
+          <div class="loop-mini">Step three</div>
+          <h5>Verify work</h5>
+          <p>Chạy test. Đọc lại file. Kiểm tra output. Nếu có gì sai, quay lại bước 1 với context mới. Nếu đúng, trả về kết quả.</p>
+        </div>
+      </div>
+
+      <div class="prose">
+        <p>Hai cơ chế giữ vòng lặp này không vỡ trận. <b>Compaction</b> tóm tắt các turn cũ khi context sắp đầy. <b>Subagents</b> spawn các vòng lặp cô lập với context window mới hoàn toàn, trả về summary, và thoát — để parent agent không phải mang theo chi tiết của các sub-task.</p>
+      </div>
+
+      <div class="callout">
+        <div class="callout-label">Mental model CEO</div>
+        <p>Hãy nghĩ về Agentic Loop như <b>chu trình PDCA</b> (Plan–Do–Check–Act) của Deming, nhưng tự động hóa ở tốc độ silicon. Agent không đi thẳng đến kết quả — nó <em>lặp</em> đến kết quả, điều chỉnh từng vòng dựa trên ground truth từ môi trường.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHAPTER 03 — THE SDK -->
+<section class="section" id="sdk">
+  <div class="container">
+    <div class="section-intro">
+      <span class="section-label">Chương 03 · The SDK</span>
+      <h2>Claude Agent <em>SDK</em></h2>
+      <p>Cuối năm 2025, Anthropic đổi tên Claude Code SDK thành <b>Claude Agent SDK</b>, ghi nhận rằng harness đứng sau Claude Code đã và đang được dùng cho research, note-taking, video, finance — về cơ bản là mọi lĩnh vực.</p>
+    </div>
+
+    <div class="container-narrow" style="padding:0">
+      <div class="chapter-head">
+        <div class="chapter-num">III</div>
+        <div>
+          <div class="chapter-label">§ 03 / SDK</div>
+          <div class="chapter-title">Thư viện <em>Python &amp; TypeScript</em> để dựng agent</div>
+        </div>
+      </div>
+
+      <div class="prose">
+        <p>SDK ship ở cả Python và TypeScript, cho bạn Claude cộng thêm <b>toàn bộ tool loop của Claude Code</b> dưới dạng một thư viện. Thay vì tự viết lại vòng lặp, bạn chỉ phát biểu ý đồ cấp cao — harness lo phần còn lại.</p>
+      </div>
+
+      <h3 class="sub-head">Agent SDK vs. <em>Client SDK</em></h3>
+
+      <div class="compare-wrap">
+        <table class="compare">
+          <thead>
+            <tr><th style="width:22%">Lớp</th><th style="width:42%">Bạn được gì</th><th>Bạn phải viết gì</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-label">Client SDK</td>
+              <td>Truy cập API trực tiếp. Bạn gửi messages, bạn parse tool-use blocks.</td>
+              <td>Toàn bộ vòng lặp thực thi tool bằng tay. Toàn quyền kiểm soát — kèm toàn bộ trách nhiệm.</td>
+            </tr>
+            <tr>
+              <td class="col-label">Agent SDK</td>
+              <td>Claude + agentic loop sẵn có + file tools + Bash + subagents + MCP + hooks + permissions + context compaction.</td>
+              <td>Chỉ phát biểu intent cấp cao. Harness lo phần còn lại.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mini-head">Install · Cài đặt</div>
+      <pre class="code" data-lang="bash"><span class="com"># Python — yêu cầu Python 3.10+, Node.js, và Claude Code 2.0.0+</span>
+pip install claude-agent-sdk
+
+<span class="com"># TypeScript</span>
+npm install @anthropic-ai/claude-agent-sdk</pre>
+
+      <div class="mini-head">Hello agent · Python</div>
+      <pre class="code" data-lang="python"><span class="kw">import</span> asyncio
+<span class="kw">from</span> claude_agent_sdk <span class="kw">import</span> query, ClaudeAgentOptions
+
+<span class="kw">async def</span> <span class="fn">main</span>():
+    <span class="kw">async for</span> message <span class="kw">in</span> query(
+        prompt=<span class="str">"What files are in this directory?"</span>,
+        options=ClaudeAgentOptions(allowed_tools=[<span class="str">"Bash"</span>, <span class="str">"Glob"</span>]),
+    ):
+        <span class="kw">if</span> <span class="fn">hasattr</span>(message, <span class="str">"result"</span>):
+            <span class="fn">print</span>(message.result)
+
+asyncio.<span class="fn">run</span>(main())</pre>
+
+      <div class="mini-head">Hello agent · TypeScript</div>
+      <pre class="code" data-lang="typescript"><span class="kw">import</span> { query } <span class="kw">from</span> <span class="str">"@anthropic-ai/claude-agent-sdk"</span>;
+
+<span class="kw">for await</span> (<span class="kw">const</span> message <span class="kw">of</span> <span class="fn">query</span>({
+  prompt: <span class="str">"Find and fix the off-by-one bug in src/parser.ts"</span>,
+  options: {
+    allowedTools: [<span class="str">"Read"</span>, <span class="str">"Edit"</span>, <span class="str">"Bash"</span>, <span class="str">"Grep"</span>],
+  },
+})) {
+  <span class="kw">if</span> (message.type === <span class="str">"result"</span> &amp;&amp; message.subtype === <span class="str">"success"</span>) {
+    console.<span class="fn">log</span>(message.result);
+  }
+}</pre>
+
+      <div class="callout">
+        <div class="callout-label">Lưu ý xác thực · Authentication</div>
+        <p>Dùng <code class="inline">ANTHROPIC_API_KEY</code> cho production. Anthropic <b>không cho phép</b> third-party developer dùng login claude.ai hoặc rate limit của gói monthly qua SDK, trừ khi đã được duyệt trước.</p>
+      </div>
+
+      <h3 class="sub-head">Token Economics — <em>kinh tế chi phí</em></h3>
+      <div class="prose">
+        <p>Đây là điều Anthropic ít viết ra nhưng cực kỳ quan trọng với SME Việt: mỗi tool call, mỗi subagent, mỗi lần compaction đều đốt token. Theo Anthropic Docs (2026), developer trung bình đốt <b>~$6/ngày</b> khi dùng Claude Code. Với <b>Agent Teams / multi-subagent</b>, con số này có thể lên ~7× vì mỗi teammate mang context window riêng.</p>
+      </div>
+
+      <div class="compare-wrap">
+        <table class="compare">
+          <thead>
+            <tr><th style="width:24%">Model</th><th style="width:38%">Khi nào dùng</th><th>Nguyên tắc chi phí</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-label">Sonnet</td>
+              <td>~90% task hằng ngày: draft, grep, extract, classify, format. Nhanh và đủ thông minh cho bulk work.</td>
+              <td>Default cho mọi subagent. Scale được lên khối lượng lớn mà không phá budget.</td>
+            </tr>
+            <tr>
+              <td class="col-label">Opus</td>
+              <td>Kiến trúc phức tạp, planning dài, reasoning nhiều bước, hoặc content có giá trị chiến lược cao.</td>
+              <td>Reserved cho orchestrator layer và quyết định khó. Đắt ~5× Sonnet — dùng có kỷ luật.</td>
+            </tr>
+            <tr>
+              <td class="col-label">Haiku</td>
+              <td>Tool calls đơn giản, classification, routing, filter pass đầu cho data lớn.</td>
+              <td>Rẻ nhất trong family. Tốt cho preprocessing pipeline trước khi đẩy vào Sonnet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <div class="callout-label">5 nguyên tắc giữ chi phí dưới $5/ngày</div>
+        <p><b>1.</b> Default Sonnet · gọi Opus chỉ khi có lý do rõ ràng. · <b>2.</b> Cho subagent model nhỏ hơn parent (parent Opus → worker Sonnet). · <b>3.</b> Compaction khi context đầy 60% · đừng chờ đến 90%. · <b>4.</b> Bỏ file lớn không cần thiết vào <code class="inline">.gitignore</code> để Claude không đọc. · <b>5.</b> Set hard limit trong <code class="inline">settings.json</code> ngay từ đầu — đã có người burn $40 trong 1 giờ vì quên bước này.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHAPTER 04 — BUILDING BLOCKS -->
+<section class="section alt-bg" id="blocks">
+  <div class="container">
+    <div class="section-intro">
+      <span class="section-label">Chương 04 · Anatomy</span>
+      <h2>Tám <em>Building Blocks</em></h2>
+      <p>Mọi agent có tính ứng dụng mà bạn xây dựng sẽ được ghép từ bộ nhỏ này. Thuộc từng khối — biết nó <em>là gì</em>, <em>không phải là gì</em>, và <em>khi nào reach for it</em>.</p>
+    </div>
+
+    <div class="container-narrow" style="padding:0">
+      <div class="chapter-head">
+        <div class="chapter-num">IV</div>
+        <div>
+          <div class="chapter-label">§ 04 / Giải phẫu</div>
+          <div class="chapter-title">Tám khối <em>xây dựng cốt lõi</em></div>
+        </div>
+      </div>
+
+      <div class="blocks-grid">
+        <div class="block-card">
+          <div class="block-tag">01 · Tools</div>
+          <h5>Built-in &amp; Custom Actions<span class="en">Hành động có sẵn và tự định nghĩa</span></h5>
+          <p>Read, Write, Edit, Bash, Grep, Glob, WebSearch, WebFetch ship out of the box. Tự định nghĩa tools với decorator <code class="inline">@tool</code> (Python) hoặc <code class="inline">createSdkMcpServer</code> (TS). Tool chỉ là một hàm typed mà Claude có thể chọn gọi.</p>
+        </div>
+
+        <div class="block-card">
+          <div class="block-tag">02 · MCP</div>
+          <h5>Model Context Protocol<span class="en">Giao thức kết nối mở</span></h5>
+          <p>Chuẩn mở kết nối agent với tools và data bên ngoài — Slack, Gmail, database, Playwright. Tool name có dạng <code class="inline">mcp__&lt;server&gt;__&lt;action&gt;</code>. Chạy in-process hoặc qua stdio / HTTP.</p>
+        </div>
+
+        <div class="block-card">
+          <div class="block-tag">03 · Subagents</div>
+          <h5>Isolated Context Windows<span class="en">Agent con với context cô lập</span></h5>
+          <p>Subagent là một instance agent tách biệt mà main agent spawn ra để xử lý một subtask tập trung. Nó có context riêng, chạy, trả về summary, và thoát. Định nghĩa programmatic hoặc markdown trong <code class="inline">.claude/agents/</code>.</p>
+        </div>
+
+        <div class="block-card">
+          <div class="block-tag">04 · Hooks</div>
+          <h5>Callbacks on Agent Events<span class="en">Điểm móc trên sự kiện agent</span></h5>
+          <p>Chạy code của bạn trên event như <code class="inline">PreToolUse</code>, <code class="inline">PostToolUse</code>, <code class="inline">SessionStart</code>, <code class="inline">UserPromptSubmit</code>. Hooks log, validate, auto-approve, hoặc block tool call một cách <b>deterministic</b> — không phải tin vào model.</p>
+        </div>
+
+        <div class="block-card">
+          <div class="block-tag">05 · Permissions</div>
+          <h5>What the Agent May Do<span class="en">Phạm vi quyền hạn của agent</span></h5>
+          <p>Kiểm soát tool access qua <code class="inline">allowedTools</code>, <code class="inline">disallowedTools</code>, và <code class="inline">permissionMode</code>. Subagents <b>không tự động kế thừa</b> permission từ parent — scope riêng hoặc duyệt qua hook <code class="inline">PreToolUse</code>.</p>
+        </div>
+
+        <div class="block-card">
+          <div class="block-tag">06 · Sessions</div>
+          <h5>Conversation Continuity<span class="en">Tính liên tục của hội thoại</span></h5>
+          <p>Mỗi lần gọi <code class="inline">query()</code> không kèm <code class="inline">resume</code> đều khởi động fresh. Bắt <code class="inline">session_id</code> từ init message, truyền lại lần sau, agent sẽ pick up đúng chỗ dừng lại.</p>
+        </div>
+
+        <div class="block-card">
+          <div class="block-tag">07 · Context Management</div>
+          <h5>Compaction &amp; Retrieval<span class="en">Quản lý ngữ cảnh</span></h5>
+          <p>SDK tự auto-compact các turn cũ khi window sắp đầy. Kết hợp với agentic search (grep filesystem), semantic search (embeddings), và subagents để giữ main thread gọn gàng.</p>
+        </div>
+
+        <div class="block-card">
+          <div class="block-tag">08 · Agent Skills</div>
+          <h5>Reusable Expertise<span class="en">Chuyên môn tái sử dụng</span></h5>
+          <p>Folder chứa <code class="inline">SKILL.md</code> + optional scripts, references, assets. Claude chỉ load metadata khi khởi động, đọc body khi relevant, và pull các file sâu hơn on-demand. <b>Progressive disclosure</b> cho tri thức agent.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHAPTER 05 — SKILLS -->
+<section class="section" id="skills">
+  <div class="container">
+    <div class="section-intro">
+      <span class="section-label">Chương 05 · Skills</span>
+      <h2>Agent Skills <em>chuyên sâu</em></h2>
+      <p>Skills là cơ chế mở rộng quan trọng <b>nhất</b> cần học sau Agentic Loop. Một Skill là một thư mục trên đĩa dạy Claude một năng lực cụ thể — format Word document, deploy app, xử lý PDF. <em>Cấu trúc filesystem chính là kiến trúc</em>.</p>
+    </div>
+
+    <div class="container-narrow" style="padding:0">
+      <div class="chapter-head">
+        <div class="chapter-num">V</div>
+        <div>
+          <div class="chapter-label">§ 05 / Skills</div>
+          <div class="chapter-title">Filesystem <em>chính là architecture</em></div>
+        </div>
+      </div>
+
+      <div class="mini-head">Cấu trúc thư mục · Skill directory</div>
+      <div class="skill-tree">
+my-skill/<br>
+├── <span class="file">SKILL.md</span>              <span class="com"># Bắt buộc. Name + description + body.</span><br>
+├── scripts/              <span class="com"># Tùy chọn. Python/bash utilities Claude có thể chạy.</span><br>
+├── references/           <span class="com"># Tùy chọn. Detail files chỉ load khi cần.</span><br>
+└── assets/               <span class="com"># Tùy chọn. Templates, fonts, fixtures.</span>
+      </div>
+
+      <h3 class="sub-head">Ba tầng <em>Progressive Disclosure</em></h3>
+      <div class="prose">
+        <p>Bí quyết khiến Skills vận hành hiệu quả là cơ chế <b>progressive disclosure</b> — "tiết lộ dần" — giúp context window của Claude không bao giờ bị quá tải.</p>
+      </div>
+
+      <div class="stage-list">
+        <div class="stage-item">
+          <div class="stage-num">1</div>
+          <div class="stage-body">
+            <h6>Startup · Khởi động</h6>
+            <p>Chỉ <em>name + description</em> metadata của mỗi Skill được pre-load. Không có gì khác chạm đến context window.</p>
+          </div>
+        </div>
+        <div class="stage-item">
+          <div class="stage-num">2</div>
+          <div class="stage-body">
+            <h6>Invocation · Kích hoạt</h6>
+            <p>Khi description match với task, Claude đọc toàn bộ body <code class="inline">SKILL.md</code> vào context.</p>
+          </div>
+        </div>
+        <div class="stage-item">
+          <div class="stage-num">3</div>
+          <div class="stage-body">
+            <h6>Deep Dive · Đào sâu</h6>
+            <p>Nếu task cần chi tiết cụ thể, Claude đọc các file tham chiếu (ví dụ <code class="inline">references/FORMS.md</code>) hoặc chạy scripts được bundle sẵn.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mini-head">Ví dụ · SKILL.md</div>
+      <pre class="code" data-lang="markdown"><span class="com">---
+name: pdf-form-filler
+description: Use this skill when the user needs to fill PDF forms,
+  extract form fields, or flatten filled PDFs. Triggers on mentions
+  of "PDF form", "fillable PDF", or uploaded .pdf files with forms.
+---</span>
+
+<span class="kw"># PDF Form Filler</span>
+
+Khi user yêu cầu bạn điền PDF form:
+
+<span class="kw">1.</span> Chạy <span class="str">`scripts/inspect_fields.py &lt;path&gt;`</span> để liệt kê field.
+<span class="kw">2.</span> Map giá trị user cung cấp sang tên field.
+<span class="kw">3.</span> Chạy <span class="str">`scripts/fill.py &lt;input&gt; &lt;output&gt; &lt;fields.json&gt;`</span>.
+<span class="kw">4.</span> Các edge case form-filling, đọc <span class="str">`references/EDGE_CASES.md`</span>.</pre>
+
+      <div class="callout">
+        <div class="callout-label">Kỷ luật authoring · Quy tắc vàng</div>
+        <p>Giữ <code class="inline">SKILL.md</code> dưới 500 dòng. <b>Description là dòng quan trọng nhất</b> trong cả file — đây là tín hiệu duy nhất Claude có khi quyết định có invoke skill không. Viết theo <em>tình huống cần dùng</em>, không phải theo <em>tính năng</em> skill làm được.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHAPTER 06 — PATTERNS -->
+<section class="section alt-bg-2" id="patterns">
+  <div class="container">
+    <div class="section-intro">
+      <span class="section-label">Chương 06 · Patterns</span>
+      <h2>Sáu composable <em>Patterns</em></h2>
+      <p>Từ <em>Building Effective Agents</em> — bài viết nền tảng của Anthropic. Đây là các khối composable giải thích được 90% kiến trúc agent production. Nhớ tên gọi — nhớ điều kiện áp dụng.</p>
+    </div>
+
+    <div class="container-narrow" style="padding:0">
+      <div class="chapter-head">
+        <div class="chapter-num">VI</div>
+        <div>
+          <div class="chapter-label">§ 06 / Patterns</div>
+          <div class="chapter-title">Sáu khung mẫu <em>kết hợp được</em></div>
+        </div>
+      </div>
+
+      <div class="pattern-list">
+        <div class="pattern-row">
+          <div class="pattern-roman">i.</div>
+          <div class="pattern-body">
+            <h5>Augmented LLM<span class="en">— LLM được bổ sung</span></h5>
+            <p>Một lần gọi LLM duy nhất đã kèm retrieval, tools, và memory. Là <b>nguyên tử</b> để xây mọi thứ khác.</p>
+            <div class="pattern-when">Bạn có thể phát biểu task trong một prompt và model đã có đủ những gì cần.</div>
+          </div>
+        </div>
+
+        <div class="pattern-row">
+          <div class="pattern-roman">ii.</div>
+          <div class="pattern-body">
+            <h5>Prompt Chaining<span class="en">— Xích prompt</span></h5>
+            <p>Phân rã task thành chuỗi cố định các lần gọi LLM. Output bước N feed vào bước N+1. <b>Deterministic và dễ debug</b>.</p>
+            <div class="pattern-when">Task tách rõ ràng thành các subtask có thứ tự và handoff sạch sẽ.</div>
+          </div>
+        </div>
+
+        <div class="pattern-row">
+          <div class="pattern-roman">iii.</div>
+          <div class="pattern-body">
+            <h5>Routing<span class="en">— Phân luồng</span></h5>
+            <p>Một classifier LLM dispatch input tới một trong nhiều handler chuyên biệt. Mỗi handler được tune riêng cho category của nó.</p>
+            <div class="pattern-when">Input rơi vào các category rời rạc và bạn muốn prompt hoặc model riêng theo từng category.</div>
+          </div>
+        </div>
+
+        <div class="pattern-row">
+          <div class="pattern-roman">iv.</div>
+          <div class="pattern-body">
+            <h5>Parallelization<span class="en">— Song song hóa</span></h5>
+            <p>Chạy nhiều lần gọi LLM đồng thời. Hoặc <em>sectioning</em> (tách công việc thành các mảnh độc lập) hoặc <em>voting</em> (cùng prompt nhiều lần, tổng hợp kết quả).</p>
+            <div class="pattern-when">Subtask độc lập với nhau, hoặc bạn cần nhiều góc nhìn / robustness kiểu majority-vote.</div>
+          </div>
+        </div>
+
+        <div class="pattern-row">
+          <div class="pattern-roman">v.</div>
+          <div class="pattern-body">
+            <h5>Orchestrator–Workers<span class="en">— Điều phối viên và thợ</span></h5>
+            <p>Một orchestrator LLM trung tâm phân rã task <b>động</b>, spawn worker LLM cho mỗi subtask, và tổng hợp kết quả. Sự phân rã do <em>model</em> điều hướng, không phải hardcode.</p>
+            <div class="pattern-when">Bạn không thể đoán trước các subtask — chúng sinh ra từ input.</div>
+          </div>
+        </div>
+
+        <div class="pattern-row">
+          <div class="pattern-roman">vi.</div>
+          <div class="pattern-body">
+            <h5>Evaluator–Optimizer<span class="en">— Đánh giá và tối ưu</span></h5>
+            <p>Một LLM tạo. Một LLM khác phê bình. Generator sửa dựa trên feedback. Lặp cho đến khi evaluator hài lòng.</p>
+            <div class="pattern-when">Có tiêu chí đánh giá rõ ràng và việc tinh chỉnh lặp đi lặp lại thực sự cải thiện output.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHAPTER 07 — WORKED EXAMPLES -->
+<section class="section" id="examples">
+  <div class="container">
+    <div class="section-intro">
+      <span class="section-label">Chương 07 · Practice</span>
+      <h2>Ba ví dụ <em>thực hành</em></h2>
+      <p>Chép chạy trực tiếp. Ba đoạn code dưới đây cover ba kịch bản phổ biến nhất: tự viết custom tool, spawn subagent, và cài hook bảo vệ.</p>
+    </div>
+
+    <div class="container-narrow" style="padding:0">
+      <div class="chapter-head">
+        <div class="chapter-num">VII</div>
+        <div>
+          <div class="chapter-label">§ 07 / Thực hành</div>
+          <div class="chapter-title">Code mẫu <em>để chép chạy</em></div>
+        </div>
+      </div>
+
+      <h3 class="sub-head">Ví dụ 01 · <em>Custom Tool</em> (in-process MCP)</h3>
+      <pre class="code" data-lang="python"><span class="kw">from</span> claude_agent_sdk <span class="kw">import</span> query, ClaudeAgentOptions, tool, create_sdk_mcp_server
+
+<span class="fn">@tool</span>(<span class="str">"get_weather"</span>, <span class="str">"Fetch current weather for a city"</span>, {<span class="str">"city"</span>: <span class="fn">str</span>})
+<span class="kw">async def</span> <span class="fn">get_weather</span>(args):
+    <span class="com"># ... gọi weather API của bạn ở đây ...</span>
+    <span class="kw">return</span> {<span class="str">"content"</span>: [{<span class="str">"type"</span>: <span class="str">"text"</span>, <span class="str">"text"</span>: <span class="str">f"72°F and sunny in {args['city']}"</span>}]}
+
+server = <span class="fn">create_sdk_mcp_server</span>(name=<span class="str">"tools"</span>, version=<span class="str">"1.0"</span>, tools=[get_weather])
+
+options = <span class="fn">ClaudeAgentOptions</span>(
+    mcp_servers={<span class="str">"local"</span>: server},
+    allowed_tools=[<span class="str">"mcp__local__get_weather"</span>],
+)</pre>
+
+      <h3 class="sub-head">Ví dụ 02 · <em>Subagent</em> cho parallel code review</h3>
+      <pre class="code" data-lang="typescript"><span class="kw">const</span> options = {
+  agents: {
+    <span class="str">"security-reviewer"</span>: {
+      description: <span class="str">"Reviews code for auth, injection, and secrets issues. Use for any PR touching auth or input handling."</span>,
+      prompt: <span class="str">"You are a security-focused code reviewer. Flag issues with severity."</span>,
+      tools: [<span class="str">"Read"</span>, <span class="str">"Grep"</span>],
+    },
+    <span class="str">"perf-reviewer"</span>: {
+      description: <span class="str">"Reviews code for performance regressions. Use for hot-path changes."</span>,
+      prompt: <span class="str">"You are a performance engineer. Focus on allocations, N+1s, and async patterns."</span>,
+      tools: [<span class="str">"Read"</span>, <span class="str">"Grep"</span>, <span class="str">"Bash"</span>],
+    },
+  },
+};
+<span class="com">// Parent agent giờ có thể dispatch song song cho cả hai reviewer.</span></pre>
+
+      <h3 class="sub-head">Ví dụ 03 · <em>PreToolUse Hook</em> chặn lệnh nguy hiểm</h3>
+      <pre class="code" data-lang="python"><span class="kw">async def</span> <span class="fn">guard</span>(input, tool_use_id, context):
+    <span class="kw">if</span> input[<span class="str">"tool_name"</span>] == <span class="str">"Bash"</span>:
+        cmd = input[<span class="str">"tool_input"</span>].get(<span class="str">"command"</span>, <span class="str">""</span>)
+        <span class="kw">if</span> <span class="str">"rm -rf"</span> <span class="kw">in</span> cmd <span class="kw">or</span> <span class="str">"sudo"</span> <span class="kw">in</span> cmd:
+            <span class="kw">return</span> {<span class="str">"behavior"</span>: <span class="str">"deny"</span>, <span class="str">"message"</span>: <span class="str">"Destructive command blocked"</span>}
+    <span class="kw">return</span> {<span class="str">"behavior"</span>: <span class="str">"allow"</span>}
+
+options = <span class="fn">ClaudeAgentOptions</span>(hooks={<span class="str">"PreToolUse"</span>: [guard]})</pre>
+    </div>
+  </div>
+</section>
+
+<!-- CHAPTER 08 — 24-HOUR SCHEDULE -->
+<section class="section alt-bg" id="schedule">
+  <div class="container">
+    <div class="section-intro">
+      <span class="section-label">Chương 08 · Schedule</span>
+      <h2>Kế hoạch <em>24 giờ</em></h2>
+      <p>Thực tế: ba block học tập 5 giờ, xen kẽ giấc ngủ, bữa ăn, và đi bộ. Mỗi giờ có một <b>deliverable cụ thể</b> — không đọc thụ động.</p>
+    </div>
+
+    <div class="container-narrow" style="padding:0">
+      <div class="chapter-head">
+        <div class="chapter-num">VIII</div>
+        <div>
+          <div class="chapter-label">§ 08 / Lộ trình</div>
+          <div class="chapter-title">Lịch <em>theo giờ</em> từ H01 đến H24</div>
+        </div>
+      </div>
+
+      <div class="schedule">
+        <div class="hour-row">
+          <div class="hour-range">H 01 – 02</div>
+          <div class="hour-title">Foundations &amp; vocabulary <span class="lvl-pill">L1 Prompt</span></div>
+          <div class="hour-desc">Đọc chương 1–2 của guide này. Đọc bài <em>Building Effective Agents</em> của Anthropic. Đến cuối H02, bạn phải định nghĩa được <em>agent</em> vs. <em>workflow</em> từ trí nhớ và giải thích ba nhịp Agentic Loop.</div>
+        </div>
+
+        <div class="hour-row">
+          <div class="hour-range">H 03 – 04</div>
+          <div class="hour-title">Install SDK · Ship hello-world <span class="lvl-pill">L1→L2</span></div>
+          <div class="hour-desc">Install SDK Python <em>hoặc</em> TypeScript. Lấy API key. Chạy ví dụ "list files in this directory". Sau đó sửa nó để summarize một text file local. Mục tiêu: <code class="inline">query()</code> trả về kết quả có nghĩa.</div>
+        </div>
+
+        <div class="hour-row">
+          <div class="hour-range">H 05 – 06</div>
+          <div class="hour-title">Tools &amp; permissions + Token Awareness <span class="lvl-pill">L2 Planner</span></div>
+          <div class="hour-desc">Nghịch với <code class="inline">allowedTools</code>. Giới hạn chỉ Read, sau đó thêm Bash. Viết một custom tool nhỏ với <code class="inline">@tool</code>. Quan sát thay đổi khi flip <code class="inline">permissionMode</code>. Bật log cost và set budget ngày đầu.</div>
+        </div>
+
+        <div class="hour-row">
+          <div class="hour-range">H 07 – 08</div>
+          <div class="hour-title">MCP crash course <span class="lvl-pill">L3→L4</span></div>
+          <div class="hour-desc">Đọc overview MCP spec. Kết nối một MCP server đã có (ví dụ filesystem hoặc GitHub). Inspect tool names (<code class="inline">mcp__&lt;server&gt;__&lt;action&gt;</code>). Cho agent gọi một cái.</div>
+        </div>
+
+        <div class="hour-row break">
+          <div class="hour-range">H 09 – 10</div>
+          <div class="hour-title">SLEEP hoặc break · Bắt buộc</div>
+          <div class="hour-desc">Mấu chốt là <b>memory consolidation</b>. Nếu bỏ qua, tỷ lệ ghi nhớ rơi mạnh. Đặt báo thức và quay lại.</div>
+        </div>
+
+        <div class="hour-row">
+          <div class="hour-range">H 11 – 12</div>
+          <div class="hour-title">Subagents <span class="lvl-pill">L4 Tool</span></div>
+          <div class="hour-desc">Định nghĩa hai subagent programmatic — một researcher, một writer. Cho parent dispatch task dùng cả hai. Quan sát cách context của chúng cô lập với nhau.</div>
+        </div>
+
+        <div class="hour-row">
+          <div class="hour-range">H 13 – 14</div>
+          <div class="hour-title">Hooks <span class="lvl-pill">L4 Tool</span></div>
+          <div class="hour-desc">Thêm <code class="inline">PreToolUse</code> logging. Thêm hook chặn <code class="inline">rm -rf</code>. Thêm <code class="inline">PostToolUse</code> hook đếm số tool call. Hiểu rằng hooks là <b>lớp an toàn deterministic</b> của bạn.</div>
+        </div>
+
+        <div class="hour-row">
+          <div class="hour-range">H 15 – 16</div>
+          <div class="hour-title">Sessions &amp; context <span class="lvl-pill">L3 Context</span></div>
+          <div class="hour-desc">Bắt một <code class="inline">session_id</code>. Resume conversation ở process mới. Để compaction trigger bằng cách chat dài. Đọc compacted summary.</div>
+        </div>
+
+        <div class="hour-row">
+          <div class="hour-range">H 17 – 18</div>
+          <div class="hour-title">Viết Skill đầu tiên <span class="lvl-pill">L5 Skill</span></div>
+          <div class="hour-desc">Chọn một task lặp đi lặp lại (ví dụ format commit message, triage bug report). Viết <code class="inline">SKILL.md</code> với description sắc bén. Test xem Claude có invoke được từ prompt tự nhiên không.</div>
+        </div>
+
+        <div class="hour-row">
+          <div class="hour-range">H 19 – 20</div>
+          <div class="hour-title">Sáu patterns <span class="lvl-pill">L5→L6</span></div>
+          <div class="hour-desc">Đọc lại chương 6. Với mỗi pattern, viết một câu mô tả một vấn đề thực trong công việc của bạn mà pattern đó giải quyết. Xây một ví dụ routing tối giản: classifier → một trong hai handler.</div>
+        </div>
+
+        <div class="hour-row">
+          <div class="hour-range">H 21 – 22</div>
+          <div class="hour-title">Build capstone <span class="lvl-pill">L6 Orchestrator</span></div>
+          <div class="hour-desc">Chọn task quan trọng với bạn — inbox triage, research brief, code migration, hoặc một bài trong E-com Lab (chương 10). Ghép: một parent agent, một subagent, một custom tool, một MCP server, một hook, một Skill. <b>Ship nó.</b></div>
+        </div>
+
+        <div class="hour-row">
+          <div class="hour-range">H 23 – 24</div>
+          <div class="hour-title">Debug, refine, document <span class="lvl-pill">L6→L7</span></div>
+          <div class="hour-desc">Đọc full transcript của capstone run. Chỗ nào loop không cần thiết? Chỗ nào thiếu context? Tighten prompt, tighten Skill description, chạy lại. Viết xuống những gì đã học. Nếu ship được vào cron/CI tự chạy mỗi ngày → bạn đã chạm L7 Autonomous.</div>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top:28px">
+        <div class="callout-label">Lý giải thang level · Sweet spot</div>
+        <p>Thang <b>L1 → L7</b> đại diện 7 cấp độ thành thạo. <b>L4–L5 là sweet spot</b> cho 80% CEO và operator: đủ để ship agent thật giải quyết bottleneck daily. <b>L6 Orchestrator</b> chỉ cần khi bạn có multi-repo hoặc Agent Teams với 3+ instance. <b>L7 Autonomous</b> (cron/scheduled tasks) là tầng cuối — khi hệ thống chạy lúc bạn ngủ. Đừng ép mình lên L6/L7 nếu L5 đã giải quyết vấn đề thật.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHAPTER 09 — TRAPS -->
+<section class="section" id="traps">
+  <div class="container">
+    <div class="section-intro">
+      <span class="section-label">Chương 09 · Wisdom</span>
+      <h2>Những cái <em>bẫy</em> cần tránh</h2>
+      <p>Sáu lỗi đốt thời gian nhiều nhất của người mới xây agent. Biết trước để né.</p>
+    </div>
+
+    <div class="container-narrow" style="padding:0">
+      <div class="chapter-head">
+        <div class="chapter-num">IX</div>
+        <div>
+          <div class="chapter-label">§ 09 / Tri thức</div>
+          <div class="chapter-title">Sáu <em>pitfall</em> phổ biến</div>
+        </div>
+      </div>
+
+      <div class="trap-list">
+        <div class="trap-item">
+          <div class="trap-icon">!</div>
+          <div class="trap-body">
+            <b>Reach for agent khi workflow là đủ.</b>
+            <span>Agent chậm hơn, đắt hơn, khó dự đoán hơn. Bắt đầu đơn giản; thêm tính tự chủ chỉ khi chi phí đó đáng.</span>
+          </div>
+        </div>
+
+        <div class="trap-item">
+          <div class="trap-icon">!</div>
+          <div class="trap-body">
+            <b>Nhồi nhét main context.</b>
+            <span>Subagents và Skills tồn tại chính là để parent thread gọn gàng. Nếu bạn đang paste doc dài vào prompt, bạn đang <em>chống lại</em> harness.</span>
+          </div>
+        </div>
+
+        <div class="trap-item">
+          <div class="trap-icon">!</div>
+          <div class="trap-body">
+            <b>Skill description yếu.</b>
+            <span>Description nói skill <em>làm gì</em> thì trigger kém. Description nói <em>khi nào invoke</em> thì trigger tốt. Match theo tình huống, không phải theo tính năng.</span>
+          </div>
+        </div>
+
+        <div class="trap-item">
+          <div class="trap-icon">!</div>
+          <div class="trap-body">
+            <b>Tin model để enforce safety.</b>
+            <span>Dùng hooks để bảo vệ deterministic. Bất cứ gì <em>cần</em> xảy ra (hoặc không được xảy ra) phải nằm trong code — không phải trong prompt.</span>
+          </div>
+        </div>
+
+        <div class="trap-item">
+          <div class="trap-icon">!</div>
+          <div class="trap-body">
+            <b>Quên subagents không kế thừa permission.</b>
+            <span>Scope tools per-subagent, hoặc thêm rule auto-approval <code class="inline">PreToolUse</code>. Nếu không bạn sẽ thấy permission prompt ở những chỗ không ngờ.</span>
+          </div>
+        </div>
+
+        <div class="trap-item">
+          <div class="trap-icon">!</div>
+          <div class="trap-body">
+            <b>Xây abstraction trước khi hiểu primitive.</b>
+            <span>Lời khuyên của chính Anthropic: dùng API trực tiếp cho đến khi bạn <em>cảm nhận được đau</em>. Phần lớn "framework" thêm phức tạp nhiều hơn là giảm bớt.</span>
+          </div>
+        </div>
+
+        <div class="trap-item">
+          <div class="trap-icon">∞</div>
+          <div class="trap-body">
+            <b>Multiplying zero is still zero · Domain &gt; Tool.</b>
+            <span>Cái bẫy lớn nhất và cuối cùng: tối ưu tool vô tận trong khi domain knowledge rỗng. Nếu bạn không hiểu sâu nghiệp vụ (Google Ads economics, supplement formulation, email deliverability, Shopify checkout flow), thì Claude dù mạnh cỡ nào cũng chỉ giúp bạn viết <em>cái sai</em> nhanh hơn. Cứ mỗi tháng, audit lại: bỏ tools và skills không dùng, đầu tư thời gian học domain. <b>3 skills tốt hơn 30 skills không ai nhớ.</b></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top:32px">
+        <div class="callout-label">Meta-Mastery · Cách kiểm tra mình</div>
+        <p>Khi đã qua 24 giờ và ship được capstone, câu hỏi không còn là <em>"dùng tool gì"</em> mà là <em>"cái gì thật sự improve output?"</em> Audit định kỳ. Subtract nhiều hơn add. Teach lại những gì đã học — blog, video, workflow chia sẻ nội bộ team. Cách tốt nhất để master là dạy lại.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHAPTER 10 — E-COMMERCE LAB — 10 EXERCISES 30 MINUTES EACH -->
+<section class="section alt-bg-2" id="lab">
+  <div class="container">
+    <div class="section-intro">
+      <span class="section-label">Chương 10 · E-commerce Lab</span>
+      <h2>18 bài tập <em>30 phút</em> xây agent thương mại điện tử</h2>
+      <p>Từ lý thuyết sang thực chiến. <b>18 agent thật sự xây được trong 30 phút mỗi bài</b>, chia làm hai track: <b>Phần A</b> (bài 1–10) cho D2C operator chung — Shopify, supplement, beauty. <b>Phần B</b> (bài 11–18) chuyên sâu cho <b>TikTok Shop Vietnam</b> — live commerce, affiliate, viral discovery. Kết hợp Claude Agent SDK với <b>Apify</b>, <b>Playwright</b>, và <b>Brave Search API</b>.</p>
+    </div>
+
+    <div class="container-narrow" style="padding:0">
+      <div class="chapter-head">
+        <div class="chapter-num">X</div>
+        <div>
+          <div class="chapter-label">§ 10 / Thực chiến</div>
+          <div class="chapter-title">Lab <em>E-commerce</em> + <em>TikTok Shop VN</em> Track</div>
+        </div>
+      </div>
+
+      <div class="lab-intro">
+        <h4>Chuẩn bị trước khi vào Lab</h4>
+        <p>Mỗi bài tập dưới đây đều scoped để <b>chạy được trong 30 phút</b> — không phải hoàn hảo, mà là một MVP agent ship được. Lab chia làm <b>hai track</b>: Phần A (bài 1–10) cho D2C chung, Phần B (bài 11–18) chuyên TikTok Shop VN. Ba bài đầu cần Apify account, ba bài giữa cần Playwright setup local, ba bài sau cần Brave Search API key. Nhiều bài Phần B cần kết hợp cả ba.</p>
+        <p>Trước khi start H21-H22 Capstone trong chương 8, khuyến nghị bạn chọn <b>3 bài tập fit nhất với bottleneck</b> hiện tại của doanh nghiệp bạn và ship lần lượt. Operator TikTok Shop VN bắt đầu trực tiếp từ <b>Phần B</b>.</p>
+        <ul>
+          <li><b>Apify API token:</b> console.apify.com → Settings → Integrations → Personal API token</li>
+          <li><b>Playwright:</b> <code class="inline">npm install playwright && npx playwright install chromium</code></li>
+          <li><b>Brave Search API key:</b> api-dashboard.search.brave.com (free 2000 queries/tháng)</li>
+          <li><b>TikTok Shop seller cookie:</b> dùng cho bài 13 — login tay 1 lần, save session JSON</li>
+          <li><b>Anthropic API key:</b> console.anthropic.com → API Keys</li>
+          <li><b>Claude Agent SDK:</b> <code class="inline">pip install claude-agent-sdk</code></li>
+        </ul>
+      </div>
+
+      <div class="ex-list">
+
+        <div class="track-divider">
+          <div class="track-divider-line"></div>
+          <div class="track-divider-content">
+            <div class="track-divider-tag">Phần A · Bài 01–10</div>
+            <div class="track-divider-title">General <em>D2C E-commerce</em> Track</div>
+            <div class="track-divider-sub">Áp dụng cho Shopify, WooCommerce, supplement / beauty / lifestyle DTC</div>
+          </div>
+          <div class="track-divider-line"></div>
+        </div>
+
+        <!-- EXERCISE 01 -->
+        <div class="ex-card">
+          <div class="ex-num-col">
+            <div class="ex-num">01</div>
+            <div class="ex-time">30 phút</div>
+          </div>
+          <div>
+            <h5 class="ex-title">TikTok Viral Ad Radar</h5>
+            <span class="ex-title-en">Radar phát hiện TikTok ads đang viral trong niche của bạn</span>
+            <div class="ex-stack">
+              <span class="stack-pill">Apify TikTok Scraper</span>
+              <span class="stack-pill gold">Claude Agent SDK</span>
+            </div>
+            <div class="ex-goal"><b>Mục tiêu:</b> Phát hiện TikTok ad đang viral trong ngách sản phẩm của bạn, giải mã creative pattern mà content team có thể học theo ngay tuần sau.</div>
+            <div class="ex-steps">
+              <ol>
+                <li>Custom tool <code class="inline">@tool fetch_tiktok</code> gọi Apify actor <code class="inline">clockworks/tiktok-scraper</code> pull 30 video top theo hashtag mục tiêu (#collagenvn, #beautytips, #suckhoe)</li>
+                <li>Claude extract cho mỗi video: hook (3s đầu), format (UGC / studio / duet / green-screen), like-to-view ratio, CTA</li>
+                <li>Claude synthesize "top 5 pattern đang work trong 7 ngày qua" kèm ví dụ minh chứng từng pattern</li>
+              </ol>
+            </div>
+            <div class="ex-deliverable"><b>Deliverable</b>Markdown brief 400 từ + CSV 30 video cho content team mổ xẻ vào Monday sync.</div>
+          </div>
+        </div>
+
+        <!-- EXERCISE 02 -->
+        <div class="ex-card">
+          <div class="ex-num-col">
+            <div class="ex-num">02</div>
+            <div class="ex-time">30 phút</div>
+          </div>
+          <div>
+            <h5 class="ex-title">TikTok Hook Generator</h5>
+            <span class="ex-title-en">Sinh 20 hook TikTok mới từ 50 hook đang viral</span>
+            <div class="ex-stack">
+              <span class="stack-pill">Apify TikTok Scraper</span>
+              <span class="stack-pill gold">Claude Agent SDK</span>
+            </div>
+            <div class="ex-goal"><b>Mục tiêu:</b> Biến 50 hook viral trong ngách thành 20 hook mới calibrated với brand voice và catalog SKU của bạn — loại bỏ writer's block của content team.</div>
+            <div class="ex-steps">
+              <ol>
+                <li>Apify pull 50 TikTok video có view &gt; 100K trong niche, extract caption + transcript 3s đầu</li>
+                <li>Custom tool <code class="inline">extract_hooks</code> trả list 50 hook + engagement metrics vào context</li>
+                <li>Claude generate 20 hook mới với cột rationale: copy angle, emotion trigger, và SKU nào của bạn dùng được</li>
+              </ol>
+            </div>
+            <div class="ex-deliverable"><b>Deliverable</b>CSV 20 hook · cột rationale · cột "phù hợp SKU nào" — push thẳng vào content calendar.</div>
+          </div>
+        </div>
+
+        <!-- EXERCISE 03 -->
+        <div class="ex-card">
+          <div class="ex-num-col">
+            <div class="ex-num">03</div>
+            <div class="ex-time">30 phút</div>
+          </div>
+          <div>
+            <h5 class="ex-title">Competitor Product Page Crawler</h5>
+            <span class="ex-title-en">Quét product page đối thủ D2C, dựng competitive matrix</span>
+            <div class="ex-stack">
+              <span class="stack-pill dark">Playwright</span>
+              <span class="stack-pill gold">Claude Agent SDK</span>
+            </div>
+            <div class="ex-goal"><b>Mục tiêu:</b> Pull data từ product page của 5 đối thủ trực tiếp, synthesize competitive matrix để CEO review trong 10 phút thay vì 2 giờ browse tay.</div>
+            <div class="ex-steps">
+              <ol>
+                <li>Playwright tool <code class="inline">navigate_and_extract</code> visit 5 URL, wait cho full render (Shopify/DTC thường lazy-load hero + reviews)</li>
+                <li>Extract JSON: price, hero headline, top 3 benefit bullets, review count, star rating, promo badge</li>
+                <li>Claude output bảng so sánh 5 đối thủ × 7 chỉ số + paragraph "điểm yếu chiến lược của mỗi đối thủ"</li>
+              </ol>
+            </div>
+            <div class="ex-deliverable"><b>Deliverable</b>Bảng markdown + 3 insight chiến lược ngắn để đưa vào next product positioning call.</div>
+          </div>
+        </div>
+
+        <!-- EXERCISE 04 -->
+        <div class="ex-card">
+          <div class="ex-num-col">
+            <div class="ex-num">04</div>
+            <div class="ex-time">30 phút</div>
+          </div>
+          <div>
+            <h5 class="ex-title">Review Mining Agent</h5>
+            <span class="ex-title-en">Đào 500 review đối thủ để tìm pain point thật</span>
+            <div class="ex-stack">
+              <span class="stack-pill">Apify Amazon / Shopee Scraper</span>
+              <span class="stack-pill gold">Claude Agent SDK</span>
+            </div>
+            <div class="ex-goal"><b>Mục tiêu:</b> Trích xuất pain point thật từ review khách hàng của đối thủ — cung cấp ammunition cho ad copy, landing page, và product roadmap.</div>
+            <div class="ex-steps">
+              <ol>
+                <li>Apify pull 500 review từ 3 sản phẩm đối thủ cùng category (prioritize 1–2 star — chỗ có pain point đậm nhất)</li>
+                <li>Claude cluster review thành 5–7 chủ đề bằng semantic grouping, gán tên mỗi cluster</li>
+                <li>Rank cluster theo tần suất + emotional intensity, kèm 3 quote đại diện để copywriter có nguyên liệu thô</li>
+              </ol>
+            </div>
+            <div class="ex-deliverable"><b>Deliverable</b>JSON 7 cluster + top 10 pain-point phrase nguyên văn để dùng trong ad hook và LP headline.</div>
+          </div>
+        </div>
+
+        <!-- EXERCISE 05 -->
+        <div class="ex-card">
+          <div class="ex-num-col">
+            <div class="ex-num">05</div>
+            <div class="ex-time">30 phút</div>
+          </div>
+          <div>
+            <h5 class="ex-title">SERP Monitor Daily</h5>
+            <span class="ex-title-en">Giám sát top 10 SERP cho 20 keyword chiến lược mỗi ngày</span>
+            <div class="ex-stack">
+              <span class="stack-pill">Brave Search API</span>
+              <span class="stack-pill gold">Claude Agent SDK</span>
+              <span class="stack-pill gold">PostToolUse Hook</span>
+            </div>
+            <div class="ex-goal"><b>Mục tiêu:</b> Daily track top 10 Google/Brave SERP cho 20 keyword chiến lược — phát hiện new entrant trước khi họ take traffic của bạn.</div>
+            <div class="ex-steps">
+              <ol>
+                <li>Custom tool <code class="inline">brave_serp(keyword)</code> gọi Brave Search API endpoint <code class="inline">/res/v1/web/search</code> cho 20 keyword</li>
+                <li>Hook <code class="inline">PostToolUse</code> lưu kết quả vào <code class="inline">serp-YYYY-MM-DD.json</code> local</li>
+                <li>Claude diff với snapshot hôm qua, flag: "3 domain mới xuất hiện top 10" + "đối thủ X rớt từ #4 xuống #9"</li>
+              </ol>
+            </div>
+            <div class="ex-deliverable"><b>Deliverable</b>Daily Slack/Telegram message 8h sáng với diff + URL mỗi new entrant.</div>
+          </div>
+        </div>
+
+        <!-- EXERCISE 06 -->
+        <div class="ex-card">
+          <div class="ex-num-col">
+            <div class="ex-num">06</div>
+            <div class="ex-time">30 phút</div>
+          </div>
+          <div>
+            <h5 class="ex-title">Daily Competitor Intel Brief</h5>
+            <span class="ex-title-en">Morning brief 150 từ về hoạt động đối thủ trong 24h qua</span>
+            <div class="ex-stack">
+              <span class="stack-pill">Brave Search API</span>
+              <span class="stack-pill gold">Claude Agent SDK</span>
+              <span class="stack-pill gold">Skill · morning-brief</span>
+            </div>
+            <div class="ex-goal"><b>Mục tiêu:</b> Mỗi 8h sáng, CEO mở điện thoại ra đã có brief 150 từ về 5 đối thủ chính — launch mới, press, funding, controversy.</div>
+            <div class="ex-steps">
+              <ol>
+                <li>Brave search query <code class="inline">"{competitor name}" news</code> và <code class="inline">"{competitor name}" launch</code> cho 5 đối thủ, filter 24h gần nhất</li>
+                <li>WebFetch top 3 kết quả mỗi đối thủ, Claude filter noise PR fluff, giữ lại event có substance</li>
+                <li>Claude compress thành brief 150 từ · bullet 5 event đáng chú ý · tag <code class="inline">[PRIORITY]</code> khi có event cạnh tranh lớn</li>
+              </ol>
+            </div>
+            <div class="ex-deliverable"><b>Deliverable</b>Email/Slack morning brief auto-gửi 8h sáng mỗi ngày · CEO đọc trong 90 giây.</div>
+          </div>
+        </div>
+
+        <!-- EXERCISE 07 -->
+        <div class="ex-card">
+          <div class="ex-num-col">
+            <div class="ex-num">07</div>
+            <div class="ex-time">30 phút</div>
+          </div>
+          <div>
+            <h5 class="ex-title">UGC Creator Scout</h5>
+            <span class="ex-title-en">Tuyển 20 creator cho UGC campaign kèm DM opener cá nhân hóa</span>
+            <div class="ex-stack">
+              <span class="stack-pill">Apify TikTok Creator Scraper</span>
+              <span class="stack-pill gold">Claude Agent SDK</span>
+            </div>
+            <div class="ex-goal"><b>Mục tiêu:</b> Tìm 20 creator phù hợp brand để chạy UGC campaign — kèm DM opener cá nhân hóa tham chiếu video gần nhất của họ (không phải template copy-paste).</div>
+            <div class="ex-steps">
+              <ol>
+                <li>Apify pull creator theo hashtag + filter: 5K–50K follower, tối thiểu 5 video đăng trong 30 ngày, niche beauty/health/lifestyle</li>
+                <li>Claude đánh giá mỗi creator ba chiều: <em>vibe fit</em> với brand, <em>audience overlap</em>, <em>evidence of prior brand collaboration</em></li>
+                <li>Rank top 20 + viết DM opener 40 từ cá nhân hóa, reference video gần nhất của creator</li>
+              </ol>
+            </div>
+            <div class="ex-deliverable"><b>Deliverable</b>CSV 20 creator · cột profile URL · cột DM draft riêng cho từng người · sẵn để affiliate team bấm send.</div>
+          </div>
+        </div>
+
+        <!-- EXERCISE 08 -->
+        <div class="ex-card">
+          <div class="ex-num-col">
+            <div class="ex-num">08</div>
+            <div class="ex-time">30 phút</div>
+          </div>
+          <div>
+            <h5 class="ex-title">Ad Creative Compliance Checker</h5>
+            <span class="ex-title-en">Verify claim trong TikTok/Meta ad match với landing page</span>
+            <div class="ex-stack">
+              <span class="stack-pill dark">Playwright</span>
+              <span class="stack-pill gold">Claude Agent SDK</span>
+              <span class="stack-pill gold">PreToolUse Hook</span>
+            </div>
+            <div class="ex-goal"><b>Mục tiêu:</b> Với mỗi ad sắp launch, verify claim trong ad copy khớp với LP thực tế — tránh risk disapproval từ Facebook/TikTok và risk compliance (FTC-style, nghị định Việt về quảng cáo thực phẩm chức năng).</div>
+            <div class="ex-steps">
+              <ol>
+                <li>Input: ad copy text + LP URL (có thể batch 10 ad một lần)</li>
+                <li>Playwright screenshot LP full-page + extract text nodes toàn trang (bao gồm FAQ, fine print)</li>
+                <li>Claude so sánh mỗi claim trong ad với text LP: nếu không tìm thấy evidence trên LP, flag <code class="inline">MISMATCH</code></li>
+              </ol>
+            </div>
+            <div class="ex-deliverable"><b>Deliverable</b>Compliance report mỗi ad · cột PASS/FAIL · mô tả mismatch cụ thể cho marketing ops fix trước launch.</div>
+          </div>
+        </div>
+
+        <!-- EXERCISE 09 -->
+        <div class="ex-card">
+          <div class="ex-num-col">
+            <div class="ex-num">09</div>
+            <div class="ex-time">30 phút</div>
+          </div>
+          <div>
+            <h5 class="ex-title">Trend-to-SKU Mapper</h5>
+            <span class="ex-title-en">Map trend mới sang SKU cơ hội trong catalog của bạn</span>
+            <div class="ex-stack">
+              <span class="stack-pill">Brave Search API</span>
+              <span class="stack-pill">Apify TikTok</span>
+              <span class="stack-pill gold">Claude Agent SDK</span>
+              <span class="stack-pill gold">Subagent · trend-analyst</span>
+            </div>
+            <div class="ex-goal"><b>Mục tiêu:</b> Detect trend mới nổi trong 7 ngày qua, map mỗi trend sang SKU cụ thể trong catalog hoặc content angle cụ thể — không để team marketing miss window 2 tuần của mỗi trend.</div>
+            <div class="ex-steps">
+              <ol>
+                <li>Brave search <code class="inline">trending {niche} 2026</code> + <code class="inline">viral {niche}</code> pull top 20 bài viết/news 7 ngày qua</li>
+                <li>Subagent <code class="inline">trend-analyst</code> dispatch sang Apify TikTok pull video có growth cao liên quan mỗi trend — context cô lập không làm ngộp parent</li>
+                <li>Claude map mỗi trend → 3 SKU từ catalog của bạn hoặc 3 content angle kèm rationale "tại sao match"</li>
+              </ol>
+            </div>
+            <div class="ex-deliverable"><b>Deliverable</b>Trend report weekly · SKU opportunity list ranked theo tiềm năng ROI · 3 content angle sẵn để creative team brief.</div>
+          </div>
+        </div>
+
+        <!-- EXERCISE 10 -->
+        <div class="ex-card">
+          <div class="ex-num-col">
+            <div class="ex-num">10</div>
+            <div class="ex-time">30 phút</div>
+          </div>
+          <div>
+            <h5 class="ex-title">Personalized Cart Recovery Generator</h5>
+            <span class="ex-title-en">Email cart recovery cá nhân hóa theo sản phẩm khách đã xem</span>
+            <div class="ex-stack">
+              <span class="stack-pill dark">Playwright</span>
+              <span class="stack-pill gold">Claude Agent SDK</span>
+              <span class="stack-pill gold">Custom MCP · product-db</span>
+            </div>
+            <div class="ex-goal"><b>Mục tiêu:</b> Viết 20 email cart recovery cá nhân hóa mỗi ngày — reference đúng sản phẩm khách đã xem, benefit phù hợp pain point họ search, offer đúng hành vi → lift conversion cart recovery từ 8% lên 15%+.</div>
+            <div class="ex-steps">
+              <ol>
+                <li>Playwright login admin Shopify/Magento, pull 20 abandoned cart gần nhất · extract SKU + browsing path + email</li>
+                <li>Custom MCP server <code class="inline">product-db</code> trả metadata mỗi SKU: benefit chính, ingredient, price, promo đang chạy</li>
+                <li>Claude viết email 80–100 từ personalized · reference sản phẩm cụ thể · benefit match nhu cầu · offer giảm 10% timebox 24h</li>
+              </ol>
+            </div>
+            <div class="ex-deliverable"><b>Deliverable</b>20 email draft JSON format sẵn push API sang Klaviyo / Mailverick · trigger hằng ngày lúc 15h (peak cart abandon).</div>
+          </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- PART B · TIKTOK SHOP VIETNAM TRACK -->
+        <!-- ============================================ -->
+        <div class="track-divider">
+          <div class="track-divider-line"></div>
+          <div class="track-divider-content">
+            <div class="track-divider-tag">Phần B · Bài 11–18</div>
+            <div class="track-divider-title">TikTok Shop <em>Vietnam</em> Track</div>
+            <div class="track-divider-sub">8 bài chuyên sâu cho operator TikTok Shop VN — live commerce, affiliate, viral discovery</div>
+          </div>
+          <div class="track-divider-line"></div>
+        </div>
+
+        <!-- EXERCISE 11 -->
+        <div class="ex-card">
+          <div class="ex-num-col">
+            <div class="ex-num">11</div>
+            <div class="ex-time">30 phút</div>
+          </div>
+          <div>
+            <h5 class="ex-title">TikTok Shop Viral Video Radar (24 giờ VN)</h5>
+            <span class="ex-title-en">Phát hiện video TikTok Shop có velocity cao nhất 24h qua trong ngách Việt</span>
+            <div class="ex-stack">
+              <span class="stack-pill">Apify TikTok Scraper</span>
+              <span class="stack-pill">Brave Search</span>
+              <span class="stack-pill gold">Claude Agent SDK</span>
+            </div>
+            <div class="ex-goal"><b>Mục tiêu:</b> Mỗi sáng 8h, có sẵn list 20 video TikTok Shop đang viral 24h qua trong ngách bạn (filter VN region) — kèm "viral DNA" để team content clone format ngay trong tuần.</div>
+            <div class="ex-steps">
+              <ol>
+                <li>Custom tool <code class="inline">fetch_tiktok_shop_viral</code> gọi <code class="inline">clockworks/tiktok-scraper</code> filter video có gắn product card, region VN, posted 24h gần nhất, hashtag ngách (<code class="inline">#mypham</code>, <code class="inline">#suckhoe</code>, <code class="inline">#dochoime</code>...)</li>
+                <li>Tính <em>velocity score</em> = (likes/giờ × shares/giờ × engagement_rate) — sort giảm dần, lọc top 20</li>
+                <li>Claude phân tích từng video: hook 3s đầu, khoảnh khắc product reveal (timestamp giây), CTA đặt ở đâu, comment top phản hồi gì</li>
+              </ol>
+            </div>
+            <div class="ex-deliverable"><b>Deliverable</b>Daily 8h sáng · 20 video URL + bảng "viral DNA" 5 cột · Slack/Telegram auto-post cho content team.</div>
+          </div>
+        </div>
+
+        <!-- EXERCISE 12 -->
+        <div class="ex-card">
+          <div class="ex-num-col">
+            <div class="ex-num">12</div>
+            <div class="ex-time">30 phút</div>
+          </div>
+          <div>
+            <h5 class="ex-title">Top Selling Product Vietnam (7 ngày)</h5>
+            <span class="ex-title-en">Rank sản phẩm TikTok Shop bán chạy nhất 7 ngày qua thị trường Việt</span>
+            <div class="ex-stack">
+              <span class="stack-pill">Apify TikTok Shop Scraper</span>
+              <span class="stack-pill gold">Claude Agent SDK</span>
+              <span class="stack-pill gold">Subagent · category-analyst</span>
+            </div>
+            <div class="ex-goal"><b>Mục tiêu:</b> Tìm sản phẩm TikTok Shop VN có doanh số tăng mạnh nhất 7 ngày qua — identify dòng đang rising để stock kịp window hoặc launch SKU mới đối ứng.</div>
+            <div class="ex-steps">
+              <ol>
+                <li>Apify pull product list theo 5 category target (mỹ phẩm, thực phẩm chức năng, mẹ &amp; bé, gia dụng, thời trang) · capture <code class="inline">sold_count_7d</code> + <code class="inline">price</code> + <code class="inline">shop_name</code></li>
+                <li>Subagent <code class="inline">category-analyst</code> tính <em>rising score</em> = (sold_7d − sold_avg_30d) / sold_avg_30d · sort top 30</li>
+                <li>Claude pick top 5 mỗi category, viết deep-dive: tại sao rising · supplier có thể là ai · hashtag/sound đang đẩy · gợi ý SKU adjacent bạn có thể launch</li>
+              </ol>
+            </div>
+            <div class="ex-deliverable"><b>Deliverable</b>Excel 30 product ranked · 5 deep-dive case study cho top movers · weekly Monday brief gửi product team.</div>
+          </div>
+        </div>
+
+        <!-- EXERCISE 13 -->
+        <div class="ex-card">
+          <div class="ex-num-col">
+            <div class="ex-num">13</div>
+            <div class="ex-time">30 phút</div>
+          </div>
+          <div>
+            <h5 class="ex-title">Live Stream Intelligence Tracker</h5>
+            <span class="ex-title-en">Đào cấu trúc live stream của 5 đối thủ chính · capture peak conversion moment</span>
+            <div class="ex-stack">
+              <span class="stack-pill dark">Playwright</span>
+              <span class="stack-pill gold">Claude Agent SDK</span>
+              <span class="stack-pill gold">PostToolUse Hook</span>
+            </div>
+            <div class="ex-goal"><b>Mục tiêu:</b> Hiểu cách 5 đối thủ TikTok Shop cùng ngách <em>thật sự</em> structure live — sản phẩm nào pin lúc nào, minute thứ mấy peak viewer, host nói gì khi conversion bùng — để host của bạn có playbook cụ thể, không phải đoán.</div>
+            <div class="ex-steps">
+              <ol>
+                <li>Playwright login TikTok seller account, navigate đến trang live của 5 đối thủ (cần cookie session đã save) · record viewer count timeline mỗi 30 giây</li>
+                <li>Capture sự kiện: pinned product change (timestamp), products shown (timestamp), host caption · Hook <code class="inline">PostToolUse</code> save mọi event vào <code class="inline">live-{date}-{competitor}.json</code></li>
+                <li>Claude analyze: "minute X viewer peak — đối thủ đang làm gì?" · output 10 takeaway chiến thuật cho host của bạn áp dụng live tiếp theo</li>
+              </ol>
+            </div>
+            <div class="ex-deliverable"><b>Deliverable</b>Live structure breakdown 5 đối thủ · 10 takeaway · cheat sheet 1 trang cho host trước mỗi live.</div>
+          </div>
+        </div>
+
+        <!-- EXERCISE 14 -->
+        <div class="ex-card">
+          <div class="ex-num-col">
+            <div class="ex-num">14</div>
+            <div class="ex-time">30 phút</div>
+          </div>
+          <div>
+            <h5 class="ex-title">Affiliate Creator Pipeline VN</h5>
+            <span class="ex-title-en">Build pipeline 30 affiliate creator có TikTok Shop badge · DM personalized</span>
+            <div class="ex-stack">
+              <span class="stack-pill">Apify TikTok Creator Scraper</span>
+              <span class="stack-pill">Brave Search</span>
+              <span class="stack-pill gold">Claude Agent SDK</span>
+            </div>
+            <div class="ex-goal"><b>Mục tiêu:</b> Có pipeline 30 affiliate creator VN đã enable TikTok Shop affiliate, GMV active, fit ngách brand — kèm DM pitch personal hóa và commission proposal sẵn sàng cho affiliate team bấm gửi.</div>
+            <div class="ex-steps">
+              <ol>
+                <li>Apify pull creator có affiliate badge, follower 5K–100K, region VN, đang post video shoppable trong 14 ngày qua · score affiliate-active bằng số video gắn product card / tháng</li>
+                <li>Brave Search query <code class="inline">"&#123;creator name&#125;" affiliate</code> — verify creator có blog/website/email không, signal commitment</li>
+                <li>Claude rank theo proxy GMV (engagement × follower × shoppable-video-frequency) · viết DM 60 từ riêng từng người, reference video gần nhất, đề xuất commission rate (15–30%)</li>
+              </ol>
+            </div>
+            <div class="ex-deliverable"><b>Deliverable</b>30 creator CSV · DM template mỗi người · commission tier proposal · ready để affiliate ops bấm send Monday morning.</div>
+          </div>
+        </div>
+
+        <!-- EXERCISE 15 -->
+        <div class="ex-card">
+          <div class="ex-num-col">
+            <div class="ex-num">15</div>
+            <div class="ex-time">30 phút</div>
+          </div>
+          <div>
+            <h5 class="ex-title">Trending Sound Early Detector</h5>
+            <span class="ex-title-en">Bắt sound TikTok rising trước peak 3–7 ngày · pair với product angle</span>
+            <div class="ex-stack">
+              <span class="stack-pill">Apify TikTok Music Scraper</span>
+              <span class="stack-pill gold">Claude Agent SDK</span>
+              <span class="stack-pill gold">Skill · sound-window</span>
+            </div>
+            <div class="ex-goal"><b>Mục tiêu:</b> Detect sound đang growth &gt;200%/24h — window 3-7 ngày trước peak là vàng cho creator team produce content. Miss window này = miss luôn cả wave.</div>
+            <div class="ex-steps">
+              <ol>
+                <li>Apify pull sound đang được dùng trong VN region · filter những sound có growth_rate &gt; 200% trong 24h gần nhất</li>
+                <li>Skill <code class="inline">sound-window</code> filter: sound nào fit context shoppable (lifestyle, beauty, ASMR, comedy-product). Bỏ sound chính trị, viral kiểu một-chiều</li>
+                <li>Map mỗi sound → 3 product angle từ catalog của bạn + script hint "dùng sound này như thế nào" + vibe reference (3 video đã dùng sound)</li>
+              </ol>
+            </div>
+            <div class="ex-deliverable"><b>Deliverable</b>Weekly "Sound Window Report" · 5–10 sound rising · 3 angle/sound · creator team produce trong 48h.</div>
+          </div>
+        </div>
+
+        <!-- EXERCISE 16 -->
+        <div class="ex-card">
+          <div class="ex-num-col">
+            <div class="ex-num">16</div>
+            <div class="ex-time">30 phút</div>
+          </div>
+          <div>
+            <h5 class="ex-title">Comment Goldmine — Objection &amp; FOMO Mining</h5>
+            <span class="ex-title-en">Đào 5000 comment trên top viral video ngách · extract objection thật</span>
+            <div class="ex-stack">
+              <span class="stack-pill">Apify TikTok Comments Scraper</span>
+              <span class="stack-pill gold">Claude Agent SDK</span>
+              <span class="stack-pill gold">Subagent · cluster-analyst</span>
+            </div>
+            <div class="ex-goal"><b>Mục tiêu:</b> Comment dưới video TikTok Shop là <em>nguyên liệu thô tốt nhất</em> để hiểu objection và FOMO trigger thật của khách. Mine có cấu trúc thay vì đọc tay tốn 2 giờ mỗi video.</div>
+            <div class="ex-steps">
+              <ol>
+                <li>Apify pull 5000 comment từ top 50 video ngách trong 30 ngày qua (gồm cả video mình + đối thủ) · giữ metadata: like_count, reply_count, video_id</li>
+                <li>Subagent <code class="inline">cluster-analyst</code> group comment thành cluster: <em>price objection · quality doubt · shipping concern · FOMO · positive testimonial · question</em></li>
+                <li>Claude output top 10 objection ranked theo tần suất + 3 quote nguyên văn mỗi objection + reply template phù hợp brand voice cho CS team</li>
+              </ol>
+            </div>
+            <div class="ex-deliverable"><b>Deliverable</b>Objection database JSON · reply template VN ready import vào TikTok Shop CS auto-reply hoặc Klaviyo SMS flow.</div>
+          </div>
+        </div>
+
+        <!-- EXERCISE 17 -->
+        <div class="ex-card">
+          <div class="ex-num-col">
+            <div class="ex-num">17</div>
+            <div class="ex-time">30 phút</div>
+          </div>
+          <div>
+            <h5 class="ex-title">Product Wedge Scanner (Demand–Supply Gap)</h5>
+            <span class="ex-title-en">Tìm sản phẩm TikTok Shop demand cao nhưng ít seller cạnh tranh</span>
+            <div class="ex-stack">
+              <span class="stack-pill">Apify TikTok Shop Search</span>
+              <span class="stack-pill">Brave Search</span>
+              <span class="stack-pill gold">Claude Agent SDK</span>
+            </div>
+            <div class="ex-goal"><b>Mục tiêu:</b> Identify the wedge — sản phẩm có demand TikTok Shop tăng mạnh nhưng listing seller còn ít. Đây là cửa sổ vàng cho new entrant hoặc product launch chiến thuật.</div>
+            <div class="ex-steps">
+              <ol>
+                <li>Apify search 100 keyword product trên TikTok Shop · count seller listing per keyword · log <code class="inline">total_listings</code>, <code class="inline">avg_sold</code>, <code class="inline">avg_price</code></li>
+                <li>Cross-reference với Brave Search VN <code class="inline">"&#123;keyword&#125;" Vietnam 2026</code> — estimate demand qua số bài blog/news/forum đang nói về keyword</li>
+                <li>Claude calculate <em>wedge score</em> = demand_signal / supply_count · flag top 20 opportunity · output entry strategy mỗi cái (price point, hook angle, supplier source)</li>
+              </ol>
+            </div>
+            <div class="ex-deliverable"><b>Deliverable</b>Wedge opportunity sheet · 20 product · entry strategy 1 paragraph mỗi cái · weekly review với product team.</div>
+          </div>
+        </div>
+
+        <!-- EXERCISE 18 -->
+        <div class="ex-card">
+          <div class="ex-num-col">
+            <div class="ex-num">18</div>
+            <div class="ex-time">30 phút</div>
+          </div>
+          <div>
+            <h5 class="ex-title">Shoppable Video Script Studio</h5>
+            <span class="ex-title-en">Sinh 10 script TikTok Shop tiếng Việt cho 3 SKU dựa trên top viral pattern</span>
+            <div class="ex-stack">
+              <span class="stack-pill">Apify TikTok Shop Top Viral</span>
+              <span class="stack-pill gold">Claude Agent SDK</span>
+              <span class="stack-pill gold">Skill · script-studio</span>
+            </div>
+            <div class="ex-goal"><b>Mục tiêu:</b> Loại bỏ writer's block của creator team. Mỗi sáng có sẵn 10 script TikTok Shop tiếng Việt cho 3 SKU bạn chọn — kèm shot list, B-roll suggestion, voice-over cue, sẵn vào studio quay.</div>
+            <div class="ex-steps">
+              <ol>
+                <li>Apify pull 30 viral shoppable video VN trong ngách · transcript tiếng Việt + caption + product card timing (giây)</li>
+                <li>Skill <code class="inline">script-studio</code> extract pattern: hook formula (3s đầu), product-reveal angle, CTA timing, kết thúc kiểu "comment để biết shop"</li>
+                <li>Claude generate 10 script Việt thuần cho 3 SKU bạn chọn · format: 0:00–0:03 hook · 0:03–0:15 problem · 0:15–0:35 product reveal · 0:35–0:50 social proof · 0:50–0:60 CTA · kèm shot list 5 cảnh + B-roll cue</li>
+              </ol>
+            </div>
+            <div class="ex-deliverable"><b>Deliverable</b>10 script ready-to-shoot trong Notion/Google Doc · production brief · creator team quay được trong 2 ngày.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="callout" style="margin-top:40px">
+        <div class="callout-label">Gợi ý triển khai · Implementation Tips</div>
+        <p>Đừng cố làm cả 18 bài trong một ngày — bạn sẽ burn out và không bài nào ship. Chọn <b>3 bài fit nhất với bottleneck hiện tại</b>:</p>
+        <p style="margin-top:10px"><b>General D2C track (1–10):</b> Content team thiếu angle → bài 1, 2, 9. CEO cần visibility đối thủ → bài 3, 5, 6. Revenue rò rỉ ở cart → bài 8, 10.</p>
+        <p style="margin-top:6px"><b>TikTok Shop VN track (11–18):</b> Mới start TikTok Shop → bài 11, 12, 17 (discovery). Đang chạy live nhưng conversion thấp → bài 13, 16, 18. Cần GMV scale qua affiliate → bài 14, 15.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CHAPTER 11 — RESOURCES -->
+<section class="section alt-bg" id="resources">
+  <div class="container">
+    <div class="section-intro">
+      <span class="section-label">Chương 11 · Sources</span>
+      <h2>Tài liệu <em>chính thống</em></h2>
+      <p>Nguồn canonical duy nhất bạn cần đặt bookmark. Mọi tutorial thứ cấp nên được đối chiếu ngược lại với những link dưới đây.</p>
+    </div>
+
+    <div class="container-narrow" style="padding:0">
+      <div class="chapter-head">
+        <div class="chapter-num">XI</div>
+        <div>
+          <div class="chapter-label">§ 11 / Nguồn</div>
+          <div class="chapter-title">Canonical <em>resources</em> từ Anthropic</div>
+        </div>
+      </div>
+
+      <div class="res-grid">
+        <a class="res-card" href="https://docs.claude.com/en/docs/agent-sdk/overview" target="_blank" rel="noopener">
+          <div class="res-type">Documentation</div>
+          <h6>Agent SDK Overview</h6>
+          <p>Tài liệu chính thức. Bắt đầu ở đây cho installation, quickstart, và API reference.</p>
+        </a>
+        <a class="res-card" href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noopener">
+          <div class="res-type">Essay</div>
+          <h6>Building Effective Agents</h6>
+          <p>Bài nền tảng của Anthropic phân loại workflow, agent, và sáu patterns.</p>
+        </a>
+        <a class="res-card" href="https://www.anthropic.com/engineering/building-agents-with-the-claude-agent-sdk" target="_blank" rel="noopener">
+          <div class="res-type">Essay</div>
+          <h6>Building Agents with the Claude Agent SDK</h6>
+          <p>Bài follow-up công bố đổi tên SDK và giải thích Agentic Loop.</p>
+        </a>
+        <a class="res-card" href="https://github.com/anthropics/claude-agent-sdk-python" target="_blank" rel="noopener">
+          <div class="res-type">Repository</div>
+          <h6>claude-agent-sdk-python</h6>
+          <p>Python SDK source, examples, và changelog. Đọc kỹ thư mục <code class="inline">examples/</code>.</p>
+        </a>
+        <a class="res-card" href="https://github.com/anthropics/claude-agent-sdk-typescript" target="_blank" rel="noopener">
+          <div class="res-type">Repository</div>
+          <h6>claude-agent-sdk-typescript</h6>
+          <p>TypeScript SDK. Bao gồm V2 preview interface với <code class="inline">send()</code> và <code class="inline">stream()</code>.</p>
+        </a>
+        <a class="res-card" href="https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview" target="_blank" rel="noopener">
+          <div class="res-type">Documentation</div>
+          <h6>Agent Skills</h6>
+          <p>Reference đầy đủ về Skills, bao gồm authoring best practices và ví dụ.</p>
+        </a>
+        <a class="res-card" href="https://anthropic.skilljar.com/introduction-to-agent-skills" target="_blank" rel="noopener">
+          <div class="res-type">Course</div>
+          <h6>Introduction to Agent Skills</h6>
+          <p>Khóa học miễn phí của chính Anthropic. Hands-on authoring Skill từ đầu.</p>
+        </a>
+        <a class="res-card" href="https://modelcontextprotocol.io" target="_blank" rel="noopener">
+          <div class="res-type">Specification</div>
+          <h6>Model Context Protocol</h6>
+          <p>Spec mở đứng sau MCP servers. Không thể thiếu khi bạn vượt qua built-in tools.</p>
+        </a>
+      </div>
+
+      <h3 class="sub-head">Khóa học miễn phí &amp; <em>tài liệu mở rộng</em></h3>
+      <div class="prose">
+        <p>Claude Agent SDK là track builder ship agent production. Song song, track <b>Claude Code CLI</b> là on-ramp tuyệt vời cho CEO/operator không phải developer. Bốn nguồn dưới đây bổ sung hoàn hảo cho guide này — tất cả đều từ Anthropic chính thức hoặc spec mở.</p>
+      </div>
+
+      <div class="res-grid">
+        <a class="res-card" href="https://anthropic.skilljar.com/" target="_blank" rel="noopener">
+          <div class="res-type">Courses · Miễn phí</div>
+          <h6>Anthropic Academy · 16 khóa</h6>
+          <p>16 khóa miễn phí có certificate từ Anthropic chính thức. Claude 101 · Claude Code in Action · Intro to MCP · Intro to Agent Skills · Intro to Subagents.</p>
+        </a>
+        <a class="res-card" href="https://code.claude.com/docs" target="_blank" rel="noopener">
+          <div class="res-type">Documentation</div>
+          <h6>Claude Code Docs</h6>
+          <p>80+ trang tài liệu CLI chính thức. Memory · Context Window · Hooks · Permission Modes · Slash Commands · Best Practices.</p>
+        </a>
+        <a class="res-card" href="https://github.com/anthropics/anthropic-cookbook" target="_blank" rel="noopener">
+          <div class="res-type">Cookbook</div>
+          <h6>Anthropic Cookbook</h6>
+          <p>Repo chính thức của Anthropic chứa Jupyter notebook và recipe thực chiến: tool use, RAG, sub-agents, evaluation, multimodal patterns.</p>
+        </a>
+        <a class="res-card" href="https://github.com/modelcontextprotocol/servers" target="_blank" rel="noopener">
+          <div class="res-type">Registry</div>
+          <h6>MCP Server Registry</h6>
+          <p>Spec mở chính thức của MCP. GitHub, Slack, Gmail, Google Drive, Shopify, Notion, Playwright — cài là dùng được với Claude Code hoặc Agent SDK.</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING BANNER -->
+<section class="closing">
+  <div class="container">
+    <div class="closing-inner">
+      <div class="closing-badge">Sáng thứ Hai · Go Build</div>
+      <h2>Đọc xong — giờ <em>đi xây</em>.</h2>
+      <p>24 giờ sau khi bạn bắt đầu, nếu bạn đã ship được capstone agent, bạn đã đứng trên mức 90% người gọi mình là "AI builder" năm 2026. Guide này không phải để đọc hai lần — mà để <b>làm</b> một lần.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <h5>Claude Agents · 24-Hour Mastery Track</h5>
+        <p>Giáo trình tổng hợp dành cho CEO, Founder, và Practitioner AI Việt — đi từ khái niệm nền tảng đến ship được một autonomous agent thật trong 24 giờ tập trung. Bám sát tài liệu chính thống của Anthropic.</p>
+      </div>
+      <div class="foot-meta">
+        <h6>Phiên bản</h6>
+        v. Tháng 4, 2026<br>
+        Nguồn: Anthropic Engineering Blog · docs.claude.com · github.com/anthropics<br>
+        <br>
+        <h6>Brand System</h6>
+        XLeader Academy · AIVN<br>
+        Typography: Oswald + Inter
+      </div>
+    </div>
+    <div class="foot-bottom">
+      © 2026 · Claude Agents Mastery Guide · Lộ trình làm chủ Claude Agents trong 24 giờ
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
